@@ -8,8 +8,8 @@
                  [org.clojure/clojurescript "1.7.170"]
                  [devcards "0.2.1"]
                  [sablono "0.4.0"]
-                 #_[org.omcljs/om "0.9.0"]
-                 #_[reagent "0.5.1"]]
+                 [org.omcljs/om "0.9.0"]
+                 [cljsjs/vega "2.3.1-0"]]
 
   :plugins [[lein-cljsbuild "1.1.1"]
             [lein-figwheel "0.5.0-1"]]
