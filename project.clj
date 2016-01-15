@@ -24,8 +24,8 @@
 
   :cljsbuild {:builds [{:id "devcards"
                         :source-paths ["src"]
-                        :figwheel {:devcards true} ;; <- note this
-                        :compiler {:main       "vega-viewer.core"
+                        :figwheel {:devcards true}
+                        :compiler {:main       "vega-viewer.dev-cards"
                                    :asset-path "js/compiled/devcards_out"
                                    :output-to  "resources/public/js/compiled/vega_viewer_devcards.js"
                                    :output-dir "resources/public/js/compiled/devcards_out"
