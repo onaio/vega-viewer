@@ -29,7 +29,9 @@
          :marks [{:from {:data "fruits"}
                   :type "rect"
                   :properties {:enter {:x {:scale "category" :field "name"}
-                                       :width {:scale "category" :band true :offset -1}
+                                       :width {:scale "category"
+                                               :band true
+                                               :offset -1}
                                        :y {:scale "frequency" :field "number"}
                                        :y2 {:scale "frequency" :value 0}}
                                :update {:fill {:value "steelblue"}}}}]}))
@@ -54,8 +56,7 @@
                             (let [view (chart #js {:el vega-container})]
                               (.update view))))))
     om/IRender
-    (render
-        [_]
+    (render [_]
       (sab/html
        [:div [:h1 "Vega Viewer"]
         [:div {:ref "vega-container"}]]))))
@@ -71,7 +72,3 @@
     (js/React.render (sab/html [:div "This is working"]) node)))
 
 (main)
-
-;; remember to run lein figwheel and then browse to
-;; http://localhost:3449/cards.html
-
