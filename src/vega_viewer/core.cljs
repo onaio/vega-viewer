@@ -61,7 +61,8 @@
         [:div {:ref "vega-container"}]]))))
 
 (defcard vega-chart
-  (om/build vega-viewer vega-spec))
+  (dc/om-root vega-viewer)
+  vega-spec)
 
 (defn main []
   ;; conditionally start the app based on wether the #main-app-area
