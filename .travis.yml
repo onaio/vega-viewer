@@ -6,7 +6,6 @@ script:
     - lein2 kibit
     - lein2 cljsbuild once dev
     - lein2 cljsbuild once prod
-    - lein2 cljsbuild once test
 notifications:
     email:
         - tech+travis.ona.io
