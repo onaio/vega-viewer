@@ -12,22 +12,22 @@
                  [cljsjs/vega "2.3.1-0"]]
 
   :plugins [[lein-cljsbuild "1.1.1"]
-            [lein-figwheel "0.5.0-1"]]
+            [lein-figwheel "0.5.0-1"]
+            [lein-cljfmt "0.3.0"]]
 
   :clean-targets ^{:protect false} ["resources/public/js/compiled"
                                     "target"]
-  
+
   :source-paths ["src"]
 
-  :cljsbuild {
-              :builds [{:id "devcards"
+  :cljsbuild {:builds [{:id "devcards"
                         :source-paths ["src"]
-                        :figwheel { :devcards true } ;; <- note this
-                        :compiler { :main       "vega-viewer.core"
-                                    :asset-path "js/compiled/devcards_out"
-                                    :output-to  "resources/public/js/compiled/vega_viewer_devcards.js"
-                                    :output-dir "resources/public/js/compiled/devcards_out"
-                                    :source-map-timestamp true }}
+                        :figwheel {:devcards true} ;; <- note this
+                        :compiler {:main       "vega-viewer.core"
+                                   :asset-path "js/compiled/devcards_out"
+                                   :output-to  "resources/public/js/compiled/vega_viewer_devcards.js"
+                                   :output-dir "resources/public/js/compiled/devcards_out"
+                                   :source-map-timestamp true}}
                        {:id "dev"
                         :source-paths ["src"]
                         :figwheel true
@@ -35,7 +35,7 @@
                                    :asset-path "js/compiled/out"
                                    :output-to  "resources/public/js/compiled/vega_viewer.js"
                                    :output-dir "resources/public/js/compiled/out"
-                                   :source-map-timestamp true }}
+                                   :source-map-timestamp true}}
                        {:id "prod"
                         :source-paths ["src"]
                         :compiler {:main       "vega-viewer.core"
@@ -43,4 +43,4 @@
                                    :output-to  "resources/public/js/compiled/vega_viewer.js"
                                    :optimizations :advanced}}]}
 
-  :figwheel { :css-dirs ["resources/public/css"] })
+  :figwheel {:css-dirs ["resources/public/css"]})
