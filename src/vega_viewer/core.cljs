@@ -70,7 +70,3 @@
     (js/React.render (sab/html [:div "This is working"]) node)))
 
 (main)
-
-;; remember to run lein figwheel and then browse to
-;; http://localhost:3449/cards.html
-
