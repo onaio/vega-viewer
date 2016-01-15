@@ -11,10 +11,11 @@
                  [org.omcljs/om "0.9.0"]
                  [cljsjs/vega "2.3.1-0"]]
 
-  :plugins [[lein-cljsbuild "1.1.1"]
-            [lein-figwheel "0.5.0-1"]
+  :plugins [[lein-bikeshed-ona "0.2.1"]
             [lein-cljfmt "0.3.0"]
-            [lein-bikeshed-ona "0.2.1"]]
+            [lein-cljsbuild "1.1.1"]
+            [lein-figwheel "0.5.0-1"]
+            [lein-kibit "0.1.2"]]
 
   :clean-targets ^{:protect false} ["resources/public/js/compiled"
                                     "target"]
