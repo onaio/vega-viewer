@@ -54,8 +54,7 @@
                             (let [view (chart #js {:el vega-container})]
                               (.update view))))))
     om/IRender
-    (render
-        [_]
+    (render [_]
       (sab/html
        [:div [:h1 "Vega Viewer"]
         [:div {:ref "vega-container"}]]))))
