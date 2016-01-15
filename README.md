@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/onaio/vega-viewer.svg?branch=master)]
+(https://travis-ci.org/onaio/vega-viewer)
+
 # Intro
 
 vega-viewer is an experimental [Om](https://github.com/omcljs/om) component that
