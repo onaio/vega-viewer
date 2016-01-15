@@ -1,6 +1,6 @@
-(defproject vega-viewer "0.1.0-SNAPSHOT"
-  :description "FIXME: write this!"
-  :url "http://example.com/FIXME"
+(defproject onaio/vega-viewer "0.1.0-SNAPSHOT"
+  :description "Om component that renders a vega chart from a spec"
+  :url "https://github.com/onaio/vega-viewer"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
 
