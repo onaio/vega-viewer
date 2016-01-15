@@ -29,7 +29,9 @@
          :marks [{:from {:data "fruits"}
                   :type "rect"
                   :properties {:enter {:x {:scale "category" :field "name"}
-                                       :width {:scale "category" :band true :offset -1}
+                                       :width {:scale "category"
+                                               :band true
+                                               :offset -1}
                                        :y {:scale "frequency" :field "number"}
                                        :y2 {:scale "frequency" :value 0}}
                                :update {:fill {:value "steelblue"}}}}]}))
