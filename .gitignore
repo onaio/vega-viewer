@@ -1,3 +1,4 @@
+pom.xml
 *.log
 resources/public/js
 target
