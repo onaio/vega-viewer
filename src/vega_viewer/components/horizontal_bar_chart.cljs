@@ -11,10 +11,10 @@
    :scales [{:name "category"
              :type "ordinal"
              :domain {:data "entries" :field "category"}
-             :range "width"}
+             :range "height"}
             {:name "frequency"
              :type "linear"
-             :range "height"
+             :range "width"
              :domain {:data "entries" :field "frequency"}}]
    :axes [{:scale "frequency" :type "x"}
           {:scale "category" :type "y"}]
@@ -25,7 +25,7 @@
                                           :band true
                                           :offset -1}
                                  :x {:scale "frequency" :field "frequency"}
-                                 :x2 {:scale "frequency" :value 0}}
+                                 :x2 {:value 0}}
                          :update {:fill {:value "steelblue"}}}}]})
 
 
