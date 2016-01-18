@@ -3,14 +3,15 @@
             [sablono.core :refer-macros [html]]
             [vega-viewer.components.vega-viewer :refer [vega-viewer]]))
 
+(def bar-height 31)
+
 (def vega-spec-template
-  {:width 200
-   :height 200
-   :data [{:name "entries"
+  {:data [{:name "entries"
            :values []}]
    :scales [{:name "category"
              :type "ordinal"
              :domain {:data "entries" :field "category"}
+             :bandWidth bar-height
              :range "height"}
             {:name "frequency"
              :type "linear"
@@ -22,6 +23,7 @@
             :type "rect"
             :properties {:enter {:y {:scale "category" :field "category"}
                                  :height {:scale "category"
+                                          :value 30
                                           :band true
                                           :offset -1}
                                  :x {:scale "frequency" :field "frequency"}
@@ -31,7 +33,9 @@
 
 (defn generate-horizontal-bar-chart-vega-spec
   [data]
-  (assoc-in vega-spec-template [:data 0 :values] data))
+  (-> vega-spec-template
+      (assoc-in [:data 0 :values] data)
+      (assoc-in [:height] (* (count data) bar-height))))
 
 (defn horizontal-bar-chart
   [cursor owner]
