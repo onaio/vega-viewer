@@ -33,9 +33,13 @@
 
 (defn generate-horizontal-bar-chart-vega-spec
   [data]
-  (-> vega-spec-template
-      (assoc-in [:data 0 :values] data)
-      (assoc-in [:height] (* (count data) bar-height))))
+  (let [tick-count (->> data
+                        (map #(get-in % ["frequency"]))
+                        (apply max))]
+    (-> vega-spec-template
+        (assoc-in [:data 0 :values] data)
+        (assoc-in [:height] (* (count data) bar-height))
+        (assoc-in [:axes 0 :ticks] tick-count))))
 
 (defn horizontal-bar-chart
   [cursor owner]
