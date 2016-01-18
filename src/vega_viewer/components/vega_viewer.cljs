@@ -9,7 +9,7 @@
     om/IDidUpdate
     (did-update [_ _ _]
       (let [vega-container (om/get-node owner "vega-container")
-            vega-spec-as-js (clj->js @vega-spec)]
+            vega-spec-as-js (clj->js vega-spec)]
         (js/vg.parse.spec vega-spec-as-js
                           (fn [chart]
                             (let [view (chart #js {:el vega-container})]
@@ -17,7 +17,7 @@
     om/IDidMount
     (did-mount [_]
       (let [vega-container (om/get-node owner "vega-container")
-            vega-spec-as-js (clj->js @vega-spec)]
+            vega-spec-as-js (clj->js vega-spec)]
         (js/vg.parse.spec vega-spec-as-js
                           (fn [chart]
                             (let [view (chart #js {:el vega-container})]
@@ -25,5 +25,4 @@
     om/IRender
     (render [_]
       (html
-       [:div [:h1 "Vega Viewer"]
-        [:div {:ref "vega-container"}]]))))
+       [:div {:ref "vega-container"}]))))
