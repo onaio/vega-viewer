@@ -20,6 +20,8 @@
   :clean-targets ^{:protect false} ["resources/public/js/compiled"
                                     "target"]
 
+  :hooks [leiningen.cljsbuild]
+
   :source-paths ["src"]
 
   :cljsbuild {:builds [{:id "devcards"
@@ -43,6 +45,19 @@
                         :compiler {:main       "vega-viewer.core"
                                    :asset-path "js/compiled/out"
                                    :output-to  "resources/public/js/compiled/vega_viewer.js"
-                                   :optimizations :advanced}}]}
+                                   :optimizations :advanced}}
+                       {:id "test"
+                        :source-paths ["src" "test"]
+                        :compiler {:output-to "target/main-test.js"
+                                   :optimizations :whitespace}
+                        :notify-command ["phantomjs"
+                                         "phantom/unit-test.js"
+                                         "phantom/unit-test.html"
+                                         "target/main-test.js"]}]
+              :test-commands {"unit-test"
+                              ["phantomjs"
+                               "phantom/unit-test.js"
+                               "phantom/unit-test.html"
+                               "target/main-test.js"]}}
 
   :figwheel {:css-dirs ["resources/public/css"]})
