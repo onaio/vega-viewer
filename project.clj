@@ -49,7 +49,8 @@
                        {:id "test"
                         :source-paths ["src" "test"]
                         :compiler {:output-to "target/main-test.js"
-                                   :optimizations :whitespace}
+                                   :optimizations :whitespace
+                                   :pretty-print true}
                         :notify-command ["phantomjs"
                                          "phantom/unit-test.js"
                                          "phantom/unit-test.html"
