@@ -1,4 +1,6 @@
-(ns vega-viewer.vega.specs)(def bar-height 31)
+(ns vega-viewer.vega.specs)
+
+(def bar-height 31)
 
 (def vega-spec-template
   {:data [{:name "entries"
