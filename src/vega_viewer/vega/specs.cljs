@@ -19,9 +19,7 @@
    :marks [{:from {:data "entries"}
             :type "rect"
             :properties {:enter {:y {:scale "category" :field "category"}
-                                 :height {:scale "category"
-                                          :value 30
-                                          :band true
+                                 :height {:value 30
                                           :offset -1}
                                  :x {:scale "frequency" :field "frequency"}
                                  :x2 {:value 0}}

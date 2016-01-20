@@ -9,14 +9,20 @@
   (let [data [{"category" "something" "frequency" 2}
               {"category" "something-else" "frequency" 3}]
         spec (generate-horizontal-bar-chart-vega-spec data)
-        spec-as-json (clj->js spec)
+        json js/JSON
+        spec-as-json (-> spec
+                         clj->js
+                         json.stringify
+                         json.parse)
         vega-schema (-> "test/fixtures/vega-schema.json"
                         read-file
                         js/JSON.parse)
-        valid? (.validate js/tv4 spec vega-schema)
+        valid? (.validate js/tv4 spec-as-json vega-schema)
         error-report (when-not valid?
                        {:message js/tv4.error.message
                         :code js/tv4.error.code
                         :data-path js/tv4.error.dataPath
-                        :spec spec})]
+                        :spec spec
+                        :spec-as-json (json.stringify spec-as-json)
+                        :sub-errors js/tv4.error.subErrors})]
     (is valid? error-report)))
