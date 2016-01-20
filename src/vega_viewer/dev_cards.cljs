@@ -1,5 +1,7 @@
 (ns vega-viewer.dev-cards
   (:require [vega-viewer.components.vega-viewer :refer [vega-viewer]]
+            [vega-viewer.components.horizontal-bar-chart
+             :refer [horizontal-bar-chart]]
             [devcards.core :refer-macros [defcard om-root]]))
 
 (def vega-spec
@@ -33,3 +35,8 @@
 (defcard vega-chart
   (om-root vega-viewer)
   vega-spec)
+
+(defcard category-chart
+  (om-root horizontal-bar-chart)
+  [{"category" "something" "frequency" 2}
+   {"category" "something-else" "frequency" 3}])
