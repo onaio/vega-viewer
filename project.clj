@@ -6,6 +6,7 @@
 
   :dependencies [[org.clojure/clojure "1.7.0"]
                  [org.clojure/clojurescript "1.7.170"]
+                 [cljsjs/tv4 "1.2.7-0"]
                  [devcards "0.2.1"]
                  [sablono "0.4.0"]
                  [org.omcljs/om "0.9.0"]
