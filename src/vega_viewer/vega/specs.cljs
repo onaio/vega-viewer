@@ -61,7 +61,7 @@
             :from {:data "summary"}}
            {:type "text"
             :from {:mark "rect"}
-            :properties {:enter {:x {:field "x2"}
+            :properties {:enter {:x {:field "x"}
                                  :y {:field "y"}
                                  :dy {:field "dy"}
                                  :fill {:value "black"}
