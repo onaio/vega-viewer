@@ -6,6 +6,7 @@
 
   :dependencies [[org.clojure/clojure "1.7.0"]
                  [org.clojure/clojurescript "1.7.170"]
+                 [cljsjs/tv4 "1.2.7-0"]
                  [devcards "0.2.1"]
                  [sablono "0.4.0"]
                  [org.omcljs/om "0.9.0"]
@@ -19,6 +20,8 @@
 
   :clean-targets ^{:protect false} ["resources/public/js/compiled"
                                     "target"]
+
+  :hooks [leiningen.cljsbuild]
 
   :source-paths ["src"]
 
@@ -43,6 +46,20 @@
                         :compiler {:main       "vega-viewer.core"
                                    :asset-path "js/compiled/out"
                                    :output-to  "resources/public/js/compiled/vega_viewer.js"
-                                   :optimizations :advanced}}]}
+                                   :optimizations :advanced}}
+                       {:id "test"
+                        :source-paths ["src" "test"]
+                        :compiler {:output-to "target/main-test.js"
+                                   :optimizations :whitespace
+                                   :pretty-print true}
+                        :notify-command ["phantomjs"
+                                         "phantom/unit-test.js"
+                                         "phantom/unit-test.html"
+                                         "target/main-test.js"]}]
+              :test-commands {"unit-test"
+                              ["phantomjs"
+                               "phantom/unit-test.js"
+                               "phantom/unit-test.html"
+                               "target/main-test.js"]}}
 
   :figwheel {:css-dirs ["resources/public/css"]})
