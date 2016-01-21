@@ -15,6 +15,7 @@
             {:name "frequency"
              :type "linear"
              :range "width"
+             :round true
              :domain {:data "entries" :field "frequency"}}]
    :axes [{:scale "frequency" :type "x"}
           {:scale "category" :type "y"}]
@@ -70,13 +71,9 @@
 
 (defn generate-horizontal-bar-chart-vega-spec
   [data]
-  (let [tick-count (->> data
-                        (map #(get-in % ["frequency"]))
-                        (apply max))]
-    (-> vega-spec-template
-        (assoc-in [:data 0 :values] data)
-        (assoc-in [:height] (* (count data) bar-height))
-        (assoc-in [:axes 0 :ticks] 10))))
+  (-> vega-spec-template
+      (assoc-in [:data 0 :values] data)
+      (assoc-in [:height] (* (count data) bar-height))))
 
 (defn generate-histogram-chart-vega-spec
   [data field_xpath field_label]
