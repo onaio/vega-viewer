@@ -6,11 +6,9 @@
    :refer [generate-histogram-chart-vega-spec]]))
 
 (defn histogram-chart
-  [{:keys [field_xpath data field_label]} owner]
+  [data owner]
   (reify
     om/IRender
     (render [_]
-      (let [vega-spec (generate-histogram-chart-vega-spec data field_xpath
-                                                          field_label)
-            _ (.log js/console (.stringify js/JSON (clj->js vega-spec)))]
+      (let [vega-spec (generate-histogram-chart-vega-spec data)]
         (html (om/build vega-viewer vega-spec))))))

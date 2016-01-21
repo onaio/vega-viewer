@@ -31,10 +31,8 @@
 (def histogram-spec-template
   {:data [{:name "entries"
            :values []
-           :format {:type "json"
-                    :parse {}}
            :transform [{:type "bin"
-                        :field ""
+                        :field "value"
                         :maxbins default-bin-size
                         :minstep 1}]}
           {:name "summary"
@@ -42,6 +40,7 @@
            :transform [{:type "aggregate"
                         :groupby ["bin_start" "bin_end"]
                         :summarize {:* ["count"]}}]}]
+   :height histogram-height
    :scales [{:name "x"
              :type "linear"
              :range "width"
@@ -51,7 +50,7 @@
              :domain {:data "summary" :field "count" :sort true}
              :range "height"}]
    :axes [{:type "x" :scale "x" :ticks 10}
-          {:type "y" :scale "y", :title "Number of Records"}]
+          {:type "y" :scale "y"}]
    :marks [{:type "rect"
             :properties {:enter
                          {:x {:scale "x" :field "bin_start" :offset 1}
@@ -76,12 +75,8 @@
       (assoc-in [:height] (* (count data) bar-height))))
 
 (defn generate-histogram-chart-vega-spec
-  [data field_xpath field_label]
-  (let [data (apply concat (map (fn [datum] (for [n (range (:count datum))]
-                                              (dissoc datum :count))) data))]
-    (-> histogram-spec-template
-        (assoc-in [:height] histogram-height)
-        (assoc-in [:data 0 :values] data)
-        (assoc-in [:data 0 :format :parse] {field_xpath "number"})
-        (assoc-in [:data 0 :transform 0 :field] field_xpath)
-        (assoc-in [:axes 0 :title] field_label))))
+  [values]
+  (assoc-in histogram-spec-template
+            [:data 0 :values] (map (fn [value]
+                                     {"value" value})
+                                   values)))
