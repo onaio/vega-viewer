@@ -21,19 +21,28 @@
      :spec spec
      :sub-errors js/tv4.error.subErrors}))
 
-(deftest spec-is-vega-compliant
-  (testing "generatated category chart spec is vega compliant"
+(deftest histogram-spec-is-vega-compliant
+  (testing "generated histogram spec is vega compliant"
+    (let [data [0 0 1 2 3 3 4 4]
+          spec (generate-histogram-chart-vega-spec data)
+          spec-as-json (clj->js spec)
+          valid? (.validate js/tv4
+                            spec-as-json
+                            vega-schema
+                            true
+                            true)]
+      (is valid? (generate-error-report spec)))))
+
+(deftest horizontal-bar-chart-spec-is-vega-compliant
+  (testing "generated category chart spec is vega compliant"
     (let [data
           [{"category" "something" "frequency" 2}
            {"category" "something-else" "frequency" 3}]
           spec (generate-horizontal-bar-chart-vega-spec data)
           spec-as-json (clj->js spec)
-          valid? (.validate js/tv4 spec-as-json vega-schema)]
-      (is valid? (generate-error-report spec))))
-
-  (testing "generated histogram spec is vega compliant"
-    (let [data [0 0 1 2 3 3 4 4]
-          spec (generate-histogram-chart-vega-spec data)
-          spec-as-json (clj->js spec)
-          valid? (.validate js/tv4 spec-as-json vega-schema)]
+          valid? (.validate js/tv4
+                            spec-as-json
+                            vega-schema
+                            true
+                            true)]
       (is valid? (generate-error-report spec)))))
