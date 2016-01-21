@@ -38,5 +38,6 @@
 
 (defcard category-chart
   (om-root horizontal-bar-chart)
-  [{"category" "something" "frequency" 2}
-   {"category" "something-else" "frequency" 3}])
+  [{"category" "Taxi" "frequency" 12}
+   {"category" "Boda boda" "frequency" 300}
+   {"category" "Matatu" "frequency" 1872}])
