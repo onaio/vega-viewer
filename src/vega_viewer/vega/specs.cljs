@@ -78,7 +78,7 @@
         (assoc-in [:height] (* (count data) bar-height))
         (assoc-in [:axes 0 :ticks] 10))))
 
-(defn generate-histogram-chart
+(defn generate-histogram-chart-vega-spec
   [data field_xpath field_label]
   (let [data (apply concat (map (fn [datum] (for [n (range (:count datum))]
                                               (dissoc datum :count))) data))]
