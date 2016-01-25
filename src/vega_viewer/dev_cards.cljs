@@ -2,6 +2,8 @@
   (:require [vega-viewer.components.vega-viewer :refer [vega-viewer]]
             [vega-viewer.components.horizontal-bar-chart
              :refer [horizontal-bar-chart]]
+            [vega-viewer.components.histogram
+             :refer [histogram-chart]]
             [devcards.core :refer-macros [defcard om-root]]))
 
 (def vega-spec
@@ -38,5 +40,10 @@
 
 (defcard category-chart
   (om-root horizontal-bar-chart)
-  [{"category" "something" "frequency" 2}
-   {"category" "something-else" "frequency" 3}])
+  [{"category" "Taxi" "frequency" 12}
+   {"category" "Boda boda" "frequency" 300}
+   {"category" "Matatu" "frequency" 1872}])
+
+(defcard histogram
+  (om-root histogram-chart)
+  [1 1 2 45 50 12 35 37])

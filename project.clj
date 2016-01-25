@@ -12,7 +12,8 @@
                  [org.omcljs/om "0.9.0"]
                  [cljsjs/vega "2.3.1-0"]]
 
-  :plugins [[lein-bikeshed-ona "0.2.1"]
+  :plugins [[lein-auto "0.1.2"]
+            [lein-bikeshed-ona "0.2.1"]
             [lein-cljfmt "0.3.0"]
             [lein-cljsbuild "1.1.1"]
             [lein-figwheel "0.5.0-1"]
