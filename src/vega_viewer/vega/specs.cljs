@@ -26,7 +26,15 @@
                                           :offset -1}
                                  :x {:scale "frequency" :field "frequency"}
                                  :x2 {:value 0}}
-                         :update {:fill {:value "steelblue"}}}}]})
+                         :update {:fill {:value "steelblue"}}}}
+           {:type "text"
+            :from {:mark "rect"}
+            :properties {:enter {:x {:field "x2" :offset 1}
+                                 :y {:field "y"}
+                                 :dy {:field "height" :mult 0.5}
+                                 :fill {:value "black"}
+                                 :baseline {:value "middle"}
+                                 :text {:field "datum.frequency"}}}}]})
 
 (def histogram-spec-template
   {:data [{:name "entries"
