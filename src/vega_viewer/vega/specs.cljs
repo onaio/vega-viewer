@@ -7,6 +7,7 @@
 (def vega-spec-template
   {:data [{:name "entries"
            :values []}]
+   :width 600
    :scales [{:name "category"
              :type "ordinal"
              :domain {:data "entries" :field "category"}
@@ -49,6 +50,7 @@
                         :groupby ["bin_start" "bin_end"]
                         :summarize {:* ["count"]}}]}]
    :height histogram-height
+   :width 600
    :scales [{:name "x"
              :type "linear"
              :range "width"
@@ -77,10 +79,12 @@
                                  :text {:field "datum.count"}}}}]})
 
 (defn generate-horizontal-bar-chart-vega-spec
-  [data]
+  [{:keys [data height width]}]
   (-> vega-spec-template
       (assoc-in [:data 0 :values] data)
-      (assoc-in [:height] (* (count data) bar-height))))
+      (assoc-in [:height] (or height
+                              (* (count data) bar-height)))
+      (assoc-in [:width] (or width 600))))
 
 (defn generate-histogram-chart-vega-spec
   [values]

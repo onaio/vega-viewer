@@ -38,7 +38,7 @@
     (let [data
           [{"category" "something" "frequency" 2}
            {"category" "something-else" "frequency" 3}]
-          spec (generate-horizontal-bar-chart-vega-spec data)
+          spec (generate-horizontal-bar-chart-vega-spec {:data data})
           spec-as-json (clj->js spec)
           valid? (.validate js/tv4
                             spec-as-json
