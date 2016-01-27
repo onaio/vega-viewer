@@ -46,4 +46,4 @@
 
 (defcard histogram
   (om-root histogram-chart)
-  [1 1 2 45 50 12 35 37])
+  {:data [1 1 2 45 50 12 35 37]})

@@ -7,7 +7,6 @@
 (def vega-spec-template
   {:data [{:name "entries"
            :values []}]
-   :width 600
    :scales [{:name "category"
              :type "ordinal"
              :domain {:data "entries" :field "category"}
@@ -27,6 +26,7 @@
                                           :offset -1}
                                  :x {:scale "frequency" :field "frequency"}
                                  :x2 {:value 0}}
+<<<<<<< 0a7e2b03f11875ea732889e84a73317a58a9a5f5
                          :update {:fill {:value "steelblue"}}}}
            {:type "text"
             :from {:mark "rect"}
@@ -36,6 +36,9 @@
                                  :fill {:value "black"}
                                  :baseline {:value "middle"}
                                  :text {:field "datum.frequency"}}}}]})
+=======
+                         :update {:fill {:value "#1f77b4"}}}}]})
+>>>>>>> OO: Change histogram chart API to accept height and width values
 
 (def histogram-spec-template
   {:data [{:name "entries"
@@ -49,8 +52,6 @@
            :transform [{:type "aggregate"
                         :groupby ["bin_start" "bin_end"]
                         :summarize {:* ["count"]}}]}]
-   :height histogram-height
-   :width 600
    :scales [{:name "x"
              :type "linear"
              :range "width"
@@ -67,7 +68,7 @@
                           :x2 {:scale "x" :field "bin_end"}
                           :y {:scale "y" :field "count"}
                           :y2 {:field {:group "height"}}
-                          :fill {:value "#4682b4"}}}
+                          :fill {:value "#1f77b4"}}}
             :from {:data "summary"}}
            {:type "text"
             :from {:mark "rect"}
@@ -87,8 +88,10 @@
       (assoc-in [:width] (or width 600))))
 
 (defn generate-histogram-chart-vega-spec
-  [values]
-  (assoc-in histogram-spec-template
-            [:data 0 :values] (map (fn [value]
-                                     {"value" value})
-                                   values)))
+  [{values :data :keys [height width]}]
+  (-> histogram-spec-template
+      (assoc-in [:data 0 :values] (map (fn [value]
+                                         {"value" value})
+                                   values))
+      (assoc-in [:height] (or height histogram-height))
+      (assoc-in [:width] (or width 600))))
