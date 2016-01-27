@@ -45,8 +45,13 @@ Clojure data structure and renders the resulting chart.
 
 Run `lein-figwheel` in the project root to explore the included devcard
 
+## Contributors
+
+* [Okal Otieno](https://github.com/okal)
+* [Roy Rutto](https://github.com/royrutto)
+
 ## License
 
-Copyright © 2016 Okal Otieno & Ona
+Copyright © 2016 Ona
 
 Distributed under the [MIT License](https://opensource.org/licenses/MIT).
