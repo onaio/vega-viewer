@@ -26,8 +26,7 @@
                                           :offset -1}
                                  :x {:scale "frequency" :field "frequency"}
                                  :x2 {:value 0}}
-<<<<<<< 0a7e2b03f11875ea732889e84a73317a58a9a5f5
-                         :update {:fill {:value "steelblue"}}}}
+                         :update {:fill {:value "#1f77b4"}}}}
            {:type "text"
             :from {:mark "rect"}
             :properties {:enter {:x {:field "x2" :offset 1}
@@ -36,9 +35,6 @@
                                  :fill {:value "black"}
                                  :baseline {:value "middle"}
                                  :text {:field "datum.frequency"}}}}]})
-=======
-                         :update {:fill {:value "#1f77b4"}}}}]})
->>>>>>> OO: Change histogram chart API to accept height and width values
 
 (def histogram-spec-template
   {:data [{:name "entries"
@@ -79,6 +75,60 @@
                                  :baseline {:value "bottom"}
                                  :text {:field "datum.count"}}}}]})
 
+(def stacked-horizontal-bar-chart-spec-template
+  {:data [{:name "table"}
+          {:name "stats"
+           :source "table"
+           :transform
+           [{:type "aggregate"
+             :groupby ["category"]
+             :summarize [{:field "frequency"
+                          :ops ["sum"]}]}]}]
+   :scales [{:name "y"
+             :type "ordinal"
+             :range "height"
+             :domain {:data "table"
+                      :field "category"}}
+            {:name "x"
+             :type "linear"
+             :range "width"
+             :nice true
+             :domain {:data "stats"
+                      :field "sum_frequency"}}
+            {:name "color"
+             :type "ordinal"
+             :range "category20c"
+             :domain {:data "table"
+                      :field "group"}}]
+   :axes [{:type "y"
+           :scale "y"}
+          {:type "x"
+           :scale "x"}]
+   :legends [{:fill "color"
+              :grid false
+              :properties {:labels
+                           {:text
+                            {:template "{{ datum.data | truncate:25 }}"}}}}]
+   :marks [{:type "rect"
+            :from {:data "table",
+                   :transform [{:type "stack"
+                                :groupby ["category"]
+                                :sortby ["group"]
+                                :field "frequency"}]}
+            :properties {:enter {:y {:scale "y"
+                                     :field "category"}
+                                 :height {:scale "y"
+                                          :band true
+                                          :offset -1}
+                                 :x {:scale "x"
+                                     :field "layout_end"}
+                                 :x2 {:scale "x"
+                                      :field "layout_start"}
+                                 :fill {:scale "color"
+                                        :field "group"}}
+                         :update {:fillOpacity {:value 1}}
+                         :hover {:fillOpacity {:value 0.5}}}}]})
+
 (defn generate-horizontal-bar-chart-vega-spec
   [{:keys [data height width]}]
   (-> vega-spec-template
@@ -94,4 +144,13 @@
                                          {"value" value})
                                    values))
       (assoc-in [:height] (or height histogram-height))
+      (assoc-in [:width] (or width 600))))
+
+(defn generate-stacked-horizontal-bar-chart-vega-spec
+  [{:keys [data height width]}]
+  (-> stacked-horizontal-bar-chart-spec-template
+      (assoc-in [:data 0 :values] data)
+      (assoc-in [:height] (or height
+                              (* (count (set (map #(get-in % ["category"]) data)))
+                                 bar-height)))
       (assoc-in [:width] (or width 600))))
