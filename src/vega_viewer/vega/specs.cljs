@@ -142,7 +142,7 @@
   (-> histogram-spec-template
       (assoc-in [:data 0 :values] (map (fn [value]
                                          {"value" value})
-                                   values))
+                                       values))
       (assoc-in [:height] (or height histogram-height))
       (assoc-in [:width] (or width 600))))
 
@@ -151,6 +151,9 @@
   (-> stacked-horizontal-bar-chart-spec-template
       (assoc-in [:data 0 :values] data)
       (assoc-in [:height] (or height
-                              (* (count (set (map #(get-in % ["category"]) data)))
-                                 bar-height)))
+                              (->> data
+                                   (map #(get-in % ["category"]))
+                                   (set)
+                                   (count)
+                                   (* bar-height))))
       (assoc-in [:width] (or width 600))))
