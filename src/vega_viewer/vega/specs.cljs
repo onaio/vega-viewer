@@ -134,10 +134,8 @@
 (defn generate-horizontal-bar-chart-vega-spec
   [{:keys [data height width show-count-or-percent?]}]
   (let [count-or-percent #(if (= show-count-or-percent? :percent)
-                           (-> %
-                               (assoc-in [:scales 1 :domainMax] 100)
-                               (assoc-in [:axes 0 :properties :labels :text
-                                          :template] "{{datum.data}} %")) %)]
+                           (assoc-in % [:axes 0 :properties :labels :text
+                                        :template] "{{datum.data}} %") %)]
     (-> vega-spec-template
         (assoc-in [:data 0 :values] data)
         (assoc-in [:height] (or height
