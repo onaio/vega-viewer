@@ -110,7 +110,9 @@
               :grid false
               :properties {:labels
                            {:text
-                            {:template "{{ datum.data | truncate:25 }}"}}}}]
+                            {:template "{{ datum.data | truncate:25 }}"}}
+                           :symbols {:shape {:value "square"}
+                                     :stroke {:value "transparent"}}}}]
    :marks [{:type "rect"
             :from {:data "table",
                    :transform [{:type "stack"
