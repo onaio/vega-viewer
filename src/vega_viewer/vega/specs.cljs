@@ -114,7 +114,7 @@
                            :symbols {:shape {:value "square"}
                                      :stroke {:value "transparent"}}}}]
    :marks [{:type "rect"
-            :from {:data "table",
+            :from {:data "table"
                    :transform [{:type "stack"
                                 :groupby ["category"]
                                 :sortby ["group"]
@@ -131,13 +131,48 @@
                                  :fill {:scale "color"
                                         :field "group"}}
                          :update {:fillOpacity {:value 1}}
-                         :hover {:fillOpacity {:value 0.5}}}}]})
+                         :hover {:fillOpacity {:value 0.5}}}}
+           {:type "group"
+            :properties {:enter {:align {:value "center"}
+                                 :fill {:value "#000"}
+                                 :width {:value 200}}
+                         :update {:y {:scale "y"
+                                      :signal "tooltip.category"}
+                                  :dy {:scale "y" :band true :mult 0.7}
+                                  :x {:scale "x"
+                                      :signal "tooltip.layout_mid"}
+                                  :height {:rule
+                                           [{:predicate {:name "tooltipVisible"
+                                                         :id {:field "_id"}}
+                                             :value 0}
+                                            {:value 40}]}
+                                  :fillOpacity 0.5}}
+            :marks [{:type "text"
+                     :properties {:enter {:align {:value "left"}
+                                          :fill {:value "#fff"}}
+                                  :update {:y {:value 15} :x {:value 10}
+                                           :text {:signal "tooltip.group"}}}}
+                    {:type "text"
+                     :properties
+                     {:enter {:align {:value "center"}
+                              :fill {:value "#fff"}}
+                      :update {:y {:value 35}
+                               :x {:value 10}
+                               :text {:signal "tooltip.frequency"}}}}]}]
+   :signals [{:name "tooltip"
+              :init {}
+              :streams [{:type "rect:mouseover" :expr "datum"}
+                        {:type "rect:mouseout" :expr "{}"}]}]
+   :predicates [{:name "tooltipVisible"
+                 :arg "id"
+                 :type "=="
+                 :operands [{:signal "tooltip._id"} {:arg "id"}]}]})
 
 (defn generate-horizontal-bar-chart-vega-spec
   [{:keys [data height width show-count-or-percent?]}]
   (let [count-or-percent #(if (= show-count-or-percent? :percent)
-                           (assoc-in % [:axes 0 :properties :labels :text
-                                        :template] "{{datum.data}} %") %)]
+                            (assoc-in % [:axes 0 :properties :labels :text
+                                         :template] "{{datum.data}} %") %)]
     (-> vega-spec-template
         (assoc-in [:data 0 :values] data)
         (assoc-in [:height] (or height
