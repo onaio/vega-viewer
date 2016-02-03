@@ -70,11 +70,12 @@
             :from {:data "summary"}}
            {:type "text"
             :from {:mark "rect"}
-            :properties {:enter {:x {:field "x"}
+            :properties {:enter {:align {:value "center"}
+                                 :x {:field "x"}
                                  :y {:field "y"}
-                                 :dy {:field "dy"}
+                                 :dx {:field "width" :mult 0.5}
+                                 :dy {:value -10}
                                  :fill {:value "black"}
-                                 :baseline {:value "bottom"}
                                  :text {:field "datum.count"}}}}]})
 
 (def stacked-horizontal-bar-chart-spec-template
