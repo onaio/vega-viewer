@@ -131,15 +131,12 @@
                       :field "sum_frequency"}}
             {:name "color"
              :type "ordinal"
-             :range "category20c"
-             :domain {:data "table"
-                      :field "group"}}]
+             :range "category20c"}]
    :axes [{:type "y"
            :scale "y"}
           {:type "x"
            :scale "x"}]
    :legends [{:fill "color"
-              :grid false
               :properties {:labels
                            {:text
                             {:template "{{ datum.data | truncate:25 }}"}}
@@ -175,11 +172,10 @@
                                   :x {:scale "x"
                                       :signal "tooltip.layout_mid"}
                                   :height {:rule
-                                           [{:predicate {:name "tooltipVisible"
-                                                         :id {:field "_id"}}
+                                           [{:predicate {:name "tooltipVisible"}
                                              :value 0}
                                             {:value 40}]}
-                                  :fillOpacity 0.5}}
+                                  :fillOpacity {:value 0.5}}}
             :marks [{:type "text"
                      :properties {:enter {:align {:value "left"}
                                           :fill {:value "#fff"}}
@@ -197,7 +193,6 @@
               :streams [{:type "rect:mouseover" :expr "datum"}
                         {:type "rect:mouseout" :expr "{}"}]}]
    :predicates [{:name "tooltipVisible"
-                 :arg "id"
                  :type "=="
                  :operands [{:signal "tooltip._id"} {:arg "id"}]}]})
 
