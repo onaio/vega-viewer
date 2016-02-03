@@ -42,10 +42,13 @@
            {:type "group"
             :properties {:enter {:align {:value "center"}
                                  :fill {:value "#000"}}
-                         :update {:y {:scale "category" :signal "tooltip.category"}
+                         :update {:y {:scale "category"
+                                      :signal "tooltip.category"}
                                   :dy {:scale "category" :band true :mult 0.7}
-                                  :x {:scale "frequency" :signal "tooltip.layout_mid"}
-                                  :height {:rule [{:predicate {:name "isTooltipVisible?"}
+                                  :x {:scale "frequency"
+                                      :signal "tooltip.layout_mid"}
+                                  :height {:rule [{:predicate
+                                                   {:name "isTooltipVisible?"}
                                                    :value 0}
                                                   {:value bar-height}]}
                                   :fillOpacity {:value 0.5}
@@ -55,7 +58,8 @@
                                           :fill {:value "#fff"}}
                                   :update {:y {:value 20}
                                            :x {:value 20}
-                                           :text {:signal "tooltip.frequency"}}}}]}]
+                                           :text
+                                           {:signal "tooltip.frequency"}}}}]}]
    :signals [{:name "tooltip"
               :init {}
               :streams [{:type "rect:mouseover" :expr "datum"}
