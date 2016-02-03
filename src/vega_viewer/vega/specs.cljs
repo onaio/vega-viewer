@@ -1,6 +1,6 @@
 (ns vega-viewer.vega.specs)
 
-(def bar-height 31)
+(def bar-height 28)
 (def histogram-height 200)
 (def default-bin-size 15)
 
@@ -10,7 +10,7 @@
    :scales [{:name "category"
              :type "ordinal"
              :domain {:data "entries" :field "category"}
-             :bandWidth bar-height
+             :bandWidth (+ 3 bar-height)
              :range "height"}
             {:name "frequency"
              :type "linear"
@@ -23,9 +23,11 @@
           {:scale "category" :type "y"}]
    :marks [{:from {:data "entries"}
             :type "rect"
-            :properties {:enter {:y {:scale "category" :field "category"}
-                                 :height {:value 30
-                                          :offset -1}
+            :properties {:enter {:y {:scale "category"
+                                     :field "category"
+                                     :offset 3}
+                                 :height {:value bar-height
+                                          :offset -1.5}
                                  :x {:scale "frequency" :field "frequency"}
                                  :x2 {:value 0}}
                          :update {:fill {:value "#1f77b4"}}}}
@@ -146,10 +148,11 @@
                                 :sortby ["group"]
                                 :field "frequency"}]}
             :properties {:enter {:y {:scale "y"
-                                     :field "category"}
+                                     :field "category"
+                                     :offset 3}
                                  :height {:scale "y"
                                           :band true
-                                          :offset -1}
+                                          :offset -1.5}
                                  :x {:scale "x"
                                      :field "layout_end"}
                                  :x2 {:scale "x"
@@ -202,7 +205,7 @@
     (-> vega-spec-template
         (assoc-in [:data 0 :values] data)
         (assoc-in [:height] (or height
-                                (* (count data) bar-height)))
+                                (* (count data) (+ bar-height 3))))
         (assoc-in [:width] (or width 600))
         count-or-percent)))
 
@@ -224,5 +227,5 @@
                                    (map #(get-in % ["category"]))
                                    (set)
                                    (count)
-                                   (* bar-height))))
+                                   (* (+ bar-height 3)))))
       (assoc-in [:width] (or width 600))))
