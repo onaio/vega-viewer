@@ -135,7 +135,9 @@
                       :field "sum_frequency"}}
             {:name "color"
              :type "ordinal"
-             :range "category20c"}]
+             :range "category20c"
+             :domain {:data "table"
+                      :field "group"}}]
    :axes [{:type "y"
            :scale "y"}
           {:type "x"
