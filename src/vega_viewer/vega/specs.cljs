@@ -7,6 +7,27 @@
 (def histogram-height 200)
 (def default-bin-size 15)
 
+(def palette ["#24B3B5"
+              "#F05C3E"
+              "#FFCD33"
+              "#AEAEAF"
+              "#2C435E"
+              "#AD3627"
+              "#6BCECE"
+              "#EA843F"
+              "#68932A"
+              "#722625"
+              "#B7A65E"
+              "#0F9BB2"
+              "#7EC451"
+              "#9467BD"
+              "#DBDB8D"
+              "#E377C2"
+              "#1F77B4"
+              "#F7B6D2"
+              "#787773"
+              "#C5B0D5"])
+
 (def vega-spec-template
   {:data [{:name "entries"
            :values []}]
@@ -135,7 +156,7 @@
                       :field "sum_frequency"}}
             {:name "color"
              :type "ordinal"
-             :range "category20c"
+             :range palette
              :domain {:data "table"
                       :field "group"}}]
    :axes [{:type "y"
