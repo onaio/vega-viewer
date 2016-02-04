@@ -28,7 +28,7 @@
               "#787773"
               "#C5B0D5"])
 
-(def vega-spec-template
+(def horizontal-bar-chart-spec-template
   {:data [{:name "entries"
            :values []}]
    :scales [{:name "category"
@@ -227,7 +227,7 @@
   (let [count-or-percent #(if (= show-count-or-percent? :percent)
                             (assoc-in % [:axes 0 :properties :labels :text
                                          :template] "{{datum.data}} %") %)]
-    (-> vega-spec-template
+    (-> horizontal-bar-chart-spec-template
         (assoc-in [:data 0 :values] data)
         (assoc-in [:height] (or height
                                 (* (count data) band-width)))
