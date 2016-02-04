@@ -4,7 +4,8 @@
             [cljsjs.tv4]
             [vega-viewer.vega.specs
              :refer [generate-histogram-chart-vega-spec
-                     generate-horizontal-bar-chart-vega-spec]]))
+                     generate-horizontal-bar-chart-vega-spec
+                     generate-stacked-horizontal-bar-chart-vega-spec]]))
 
 (def json js/JSON)
 
@@ -38,7 +39,26 @@
     (let [data
           [{"category" "something" "frequency" 2}
            {"category" "something-else" "frequency" 3}]
-          spec (generate-horizontal-bar-chart-vega-spec data)
+          spec (generate-horizontal-bar-chart-vega-spec {:data data})
+          spec-as-json (clj->js spec)
+          valid? (.validate js/tv4
+                            spec-as-json
+                            vega-schema
+                            true
+                            true)]
+      (is valid? (generate-error-report spec)))))
+
+(deftest stacked-horizontal-bar-chart-spec-is-vega-compliant
+  (testing "generated stacked horizontal bar chart spec is vega compliant"
+    (let [data
+          [{"category" "area1" "group" ["group1"] "frequency" 5}
+           {"category" "area1" "group" ["group2"] "frequency" 4}
+           {"category" "area2" "group" ["group1"] "frequency" 2}
+           {"category" "area2" "group" ["group1"] "frequency" 1}
+           {"category" "area3" "group" ["group2"] "frequency" 10}
+           {"category" "area3" "group" ["group1"] "frequency" 4}
+           {"category" "area3" "group" ["group1"] "frequency" 6}]
+          spec (generate-stacked-horizontal-bar-chart-vega-spec {:data data})
           spec-as-json (clj->js spec)
           valid? (.validate js/tv4
                             spec-as-json

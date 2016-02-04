@@ -40,10 +40,10 @@
 
 (defcard category-chart
   (om-root horizontal-bar-chart)
-  [{"category" "Taxi" "frequency" 12}
-   {"category" "Boda boda" "frequency" 300}
-   {"category" "Matatu" "frequency" 1872}])
+  {:data [{"category" "Taxi" "frequency" 12}
+          {"category" "Boda boda" "frequency" 300}
+          {"category" "Matatu" "frequency" 1872}]})
 
 (defcard histogram
   (om-root histogram-chart)
-  [1 1 2 45 50 12 35 37])
+  {:data [1 1 2 45 50 12 35 37]})

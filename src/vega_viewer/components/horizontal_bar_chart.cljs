@@ -6,6 +6,13 @@
              :refer [generate-horizontal-bar-chart-vega-spec]]))
 
 (defn horizontal-bar-chart
+  "Return an Om component that renders a horizontal bar chart
+   the cursor is of the form {:data `data` :height `height` :width `width`}
+   `data` [required] is a vector of maps of the form
+   {\"key\": <string>
+    \"value\": <integer>}
+   `height` is an integer representing the height of the generated chart
+   `width` is an integer representing the height of the generated chart"
   [cursor owner]
   (reify
     om/IRender
