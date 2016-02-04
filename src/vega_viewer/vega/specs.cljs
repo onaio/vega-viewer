@@ -54,7 +54,7 @@
                                           :offset bar-height-offset}
                                  :x {:scale "frequency" :field "frequency"}
                                  :x2 {:value 0}}
-                         :update {:fill {:value "#1f77b4"}}}}
+                         :update {:fill {:value "#24B3B5"}}}}
            {:type "text"
             :from {:mark "rect"}
             :properties {:enter {:x {:field "x2" :offset 1}
@@ -121,7 +121,7 @@
                           :x2 {:scale "x" :field "bin_end"}
                           :y {:scale "y" :field "count"}
                           :y2 {:field {:group "height"}}
-                          :fill {:value "#1f77b4"}}}
+                          :fill {:value "#24B3B5"}}}
             :from {:data "summary"}}
            {:type "text"
             :from {:mark "rect"}
