@@ -1,6 +1,9 @@
 (ns vega-viewer.vega.specs)
 
-(def bar-height 28)
+(def bar-height 27)
+(def bar-height-offset -2)
+(def band-width (+ 3 bar-height))
+(def y-offset 3)
 (def histogram-height 200)
 (def default-bin-size 15)
 
@@ -10,7 +13,7 @@
    :scales [{:name "category"
              :type "ordinal"
              :domain {:data "entries" :field "category"}
-             :bandWidth (+ 3 bar-height)
+             :bandWidth band-width
              :range "height"}
             {:name "frequency"
              :type "linear"
@@ -25,9 +28,9 @@
             :type "rect"
             :properties {:enter {:y {:scale "category"
                                      :field "category"
-                                     :offset 3}
+                                     :offset y-offset}
                                  :height {:value bar-height
-                                          :offset -1.5}
+                                          :offset bar-height-offset}
                                  :x {:scale "frequency" :field "frequency"}
                                  :x2 {:value 0}}
                          :update {:fill {:value "#1f77b4"}}}}
@@ -121,6 +124,7 @@
    :scales [{:name "y"
              :type "ordinal"
              :range "height"
+             :bandWidth band-width
              :domain {:data "table"
                       :field "category"}}
             {:name "x"
@@ -153,10 +157,9 @@
                                 :field "frequency"}]}
             :properties {:enter {:y {:scale "y"
                                      :field "category"
-                                     :offset 3}
-                                 :height {:scale "y"
-                                          :band true
-                                          :offset -1.5}
+                                     :offset y-offset}
+                                 :height {:value bar-height
+                                          :offset bar-height-offset}
                                  :x {:scale "x"
                                      :field "layout_end"}
                                  :x2 {:scale "x"
@@ -209,7 +212,7 @@
     (-> vega-spec-template
         (assoc-in [:data 0 :values] data)
         (assoc-in [:height] (or height
-                                (* (count data) (+ bar-height 3))))
+                                (* (count data) band-width)))
         (assoc-in [:width] (or width 600))
         count-or-percent)))
 
@@ -231,5 +234,5 @@
                                    (map #(get-in % ["category"]))
                                    (set)
                                    (count)
-                                   (* (+ bar-height 3)))))
+                                   (* band-width))))
       (assoc-in [:width] (or width 600))))
