@@ -1,6 +1,9 @@
 (ns vega-viewer.vega.specs)
 
-(def bar-height 31)
+(def bar-height 27)
+(def bar-height-offset -2)
+(def band-width (+ 3 bar-height))
+(def y-offset 3)
 (def histogram-height 200)
 (def default-bin-size 15)
 
@@ -10,7 +13,7 @@
    :scales [{:name "category"
              :type "ordinal"
              :domain {:data "entries" :field "category"}
-             :bandWidth bar-height
+             :bandWidth band-width
              :range "height"}
             {:name "frequency"
              :type "linear"
@@ -23,9 +26,11 @@
           {:scale "category" :type "y"}]
    :marks [{:from {:data "entries"}
             :type "rect"
-            :properties {:enter {:y {:scale "category" :field "category"}
-                                 :height {:value 30
-                                          :offset -1}
+            :properties {:enter {:y {:scale "category"
+                                     :field "category"
+                                     :offset y-offset}
+                                 :height {:value bar-height
+                                          :offset bar-height-offset}
                                  :x {:scale "frequency" :field "frequency"}
                                  :x2 {:value 0}}
                          :update {:fill {:value "#1f77b4"}}}}
@@ -36,7 +41,36 @@
                                  :dy {:field "height" :mult 0.5}
                                  :fill {:value "black"}
                                  :baseline {:value "middle"}
-                                 :text {:field "datum.frequency"}}}}]})
+                                 :text {:field "datum.frequency"}}}}
+           {:type "group"
+            :properties {:enter {:align {:value "center"}
+                                 :fill {:value "#000"}}
+                         :update {:y {:scale "category"
+                                      :signal "tooltip.category"}
+                                  :dy {:scale "category" :band true :mult 0.7}
+                                  :x {:scale "frequency"
+                                      :signal "tooltip.layout_mid"}
+                                  :height {:rule [{:predicate
+                                                   {:name "isTooltipVisible?"}
+                                                   :value 0}
+                                                  {:value bar-height}]}
+                                  :fillOpacity {:value 0.5}
+                                  :width {:value 40}}}
+            :marks [{:type "text"
+                     :properties {:enter {:align {:value "center"}
+                                          :fill {:value "#fff"}}
+                                  :update {:y {:value 20}
+                                           :x {:value 20}
+                                           :text
+                                           {:signal "tooltip.frequency"}}}}]}]
+   :signals [{:name "tooltip"
+              :init {}
+              :streams [{:type "rect:mouseover" :expr "datum"}
+                        {:type "rect:mouseout" :expr "{}"}]}]
+   :predicates [{:name "isTooltipVisible?"
+                 :type "==",
+                 :operands [{:signal "tooltip._id"}
+                            {:arg "id"}]}]})
 
 (def histogram-spec-template
   {:data [{:name "entries"
@@ -90,6 +124,7 @@
    :scales [{:name "y"
              :type "ordinal"
              :range "height"
+             :bandWidth band-width
              :domain {:data "table"
                       :field "category"}}
             {:name "x"
@@ -118,10 +153,10 @@
                                 :sortby ["group"]
                                 :field "frequency"}]}
             :properties {:enter {:y {:scale "y"
-                                     :field "category"}
-                                 :height {:scale "y"
-                                          :band true
-                                          :offset -1}
+                                     :field "category"
+                                     :offset y-offset}
+                                 :height {:value bar-height
+                                          :offset bar-height-offset}
                                  :x {:scale "x"
                                      :field "layout_end"}
                                  :x2 {:scale "x"
@@ -172,7 +207,7 @@
     (-> vega-spec-template
         (assoc-in [:data 0 :values] data)
         (assoc-in [:height] (or height
-                                (* (count data) bar-height)))
+                                (* (count data) band-width)))
         (assoc-in [:width] (or width 600))
         count-or-percent)))
 
@@ -194,5 +229,5 @@
                                    (map #(get-in % ["category"]))
                                    (set)
                                    (count)
-                                   (* bar-height))))
+                                   (* band-width))))
       (assoc-in [:width] (or width 600))))

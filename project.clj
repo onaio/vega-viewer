@@ -37,15 +37,13 @@
                        {:id "dev"
                         :source-paths ["src"]
                         :figwheel true
-                        :compiler {:main       "vega-viewer.core"
-                                   :asset-path "js/compiled/out"
+                        :compiler {:asset-path "js/compiled/out"
                                    :output-to  "resources/public/js/compiled/vega_viewer.js"
                                    :output-dir "resources/public/js/compiled/out"
                                    :source-map-timestamp true}}
                        {:id "prod"
                         :source-paths ["src"]
-                        :compiler {:main       "vega-viewer.core"
-                                   :asset-path "js/compiled/out"
+                        :compiler {:asset-path "js/compiled/out"
                                    :output-to  "resources/public/js/compiled/vega_viewer.js"
                                    :optimizations :advanced}}
                        {:id "test"
