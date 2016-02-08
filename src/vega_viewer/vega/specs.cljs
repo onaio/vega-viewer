@@ -6,8 +6,30 @@
 (def y-offset 3)
 (def histogram-height 200)
 (def default-bin-size 15)
+(def bar-color "#24B3B5")
 
-(def vega-spec-template
+(def palette ["#24B3B5"
+              "#F05C3E"
+              "#FFCD33"
+              "#AEAEAF"
+              "#2C435E"
+              "#AD3627"
+              "#6BCECE"
+              "#EA843F"
+              "#68932A"
+              "#722625"
+              "#B7A65E"
+              "#0F9BB2"
+              "#7EC451"
+              "#9467BD"
+              "#DBDB8D"
+              "#E377C2"
+              "#1F77B4"
+              "#F7B6D2"
+              "#787773"
+              "#C5B0D5"])
+
+(def horizontal-bar-chart-spec-template
   {:data [{:name "entries"
            :values []}]
    :scales [{:name "category"
@@ -33,7 +55,7 @@
                                           :offset bar-height-offset}
                                  :x {:scale "frequency" :field "frequency"}
                                  :x2 {:value 0}}
-                         :update {:fill {:value "#1f77b4"}}}}
+                         :update {:fill {:value bar-color}}}}
            {:type "text"
             :from {:mark "rect"}
             :properties {:enter {:x {:field "x2" :offset 1}
@@ -100,7 +122,7 @@
                           :x2 {:scale "x" :field "bin_end"}
                           :y {:scale "y" :field "count"}
                           :y2 {:field {:group "height"}}
-                          :fill {:value "#1f77b4"}}}
+                          :fill {:value bar-color}}}
             :from {:data "summary"}}
            {:type "text"
             :from {:mark "rect"}
@@ -135,7 +157,9 @@
                       :field "sum_frequency"}}
             {:name "color"
              :type "ordinal"
-             :range "category20c"}]
+             :range palette
+             :domain {:data "table"
+                      :field "group"}}]
    :axes [{:type "y"
            :scale "y"}
           {:type "x"
@@ -204,7 +228,7 @@
   (let [count-or-percent #(if (= show-count-or-percent? :percent)
                             (assoc-in % [:axes 0 :properties :labels :text
                                          :template] "{{datum.data}} %") %)]
-    (-> vega-spec-template
+    (-> horizontal-bar-chart-spec-template
         (assoc-in [:data 0 :values] data)
         (assoc-in [:height] (or height
                                 (* (count data) band-width)))
