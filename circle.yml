@@ -1,8 +1,0 @@
-test:
-  override:
-    - lein bikeshed
-    - lein cljfmt check
-    - lein kibit
-    - lein cljsbuild once dev
-    - lein cljsbuild once prod
-    - lein cljsbuild test
