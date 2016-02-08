@@ -6,6 +6,7 @@
 (def y-offset 3)
 (def histogram-height 200)
 (def default-bin-size 15)
+(def bar-color "#24B3B5")
 
 (def palette ["#24B3B5"
               "#F05C3E"
@@ -54,7 +55,7 @@
                                           :offset bar-height-offset}
                                  :x {:scale "frequency" :field "frequency"}
                                  :x2 {:value 0}}
-                         :update {:fill {:value "#24B3B5"}}}}
+                         :update {:fill {:value bar-color}}}}
            {:type "text"
             :from {:mark "rect"}
             :properties {:enter {:x {:field "x2" :offset 1}
@@ -121,7 +122,7 @@
                           :x2 {:scale "x" :field "bin_end"}
                           :y {:scale "y" :field "count"}
                           :y2 {:field {:group "height"}}
-                          :fill {:value "#24B3B5"}}}
+                          :fill {:value bar-color}}}
             :from {:data "summary"}}
            {:type "text"
             :from {:mark "rect"}
