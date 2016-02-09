@@ -130,7 +130,7 @@
                                  :x {:field "x"}
                                  :y {:field "y"}
                                  :dx {:field "width" :mult 0.5}
-                                 :dy {:value -10}
+                                 :dy {:value -7}
                                  :fill {:value "black"}
                                  :text {:field "datum.count"}}}}]})
 
