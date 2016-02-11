@@ -82,7 +82,7 @@
                                                    {:name "isTooltipVisible?"}
                                                    :value 0}
                                                   {:value bar-height}]}
-                                  :fillOpacity {:value 0.5}
+                                  :fillOpacity {:value 0.9}
                                   :width {:value 40}}}
             :marks [{:type "text"
                      :properties {:enter {:align {:value "center"}
@@ -200,40 +200,46 @@
                                  :fill {:scale "color"
                                         :field "group"}}
                          :update {:fillOpacity {:value 1}}
-                         :hover {:fillOpacity {:value 0.5}}}}
+                         :hover {:fillOpacity {:value 0.9}}}}
            {:type "group"
             :properties {:enter {:align {:value "center"}
                                  :fill {:value "#000"}
                                  :width {:value 200}}
-                         :update {:y {:scale "y"
-                                      :signal "tooltip.category"}
-                                  :dy {:scale "y" :band true :mult 0.7}
-                                  :x {:scale "x"
-                                      :signal "tooltip.layout_mid"}
+                         :update {:y {:signal "tooltipY"
+                                      :offset tooltip-offset}
+                                  :x {:signal "tooltipX"
+                                      :offset tooltip-offset}
                                   :height {:rule
                                            [{:predicate {:name "tooltipVisible"}
                                              :value 0}
                                             {:value 40}]}
-                                  :fillOpacity {:value 0.5}}}
+                                  :fillOpacity {:value 0.9}}}
             :marks [{:type "text"
                      :properties {:enter {:align {:value "left"}
                                           :fill {:value "#fff"}}
-                                  :update {:y {:value 15} :x {:value 10}
-                                           :text {:signal "tooltip.group"}}}}
+                                  :update {:y {:value 15}
+                                           :x {:value 10}
+                                           :text {:signal "tooltipData.group"}}}}
                     {:type "text"
                      :properties
-                     {:enter {:align {:value "center"}
+                     {:enter {:align {:value "left"}
                               :fill {:value "#fff"}}
                       :update {:y {:value 35}
                                :x {:value 10}
-                               :text {:signal "tooltip.frequency"}}}}]}]
-   :signals [{:name "tooltip"
+                               :text {:signal "tooltipData.frequency"}}}}]}]
+   :signals [{:name "tooltipData"
               :init {}
               :streams [{:type "rect:mouseover" :expr "datum"}
-                        {:type "rect:mouseout" :expr "{}"}]}]
+                        {:type "rect:mouseout" :expr "{}"}]}
+             {:name "tooltipX"
+              :streams [{:type "mousemove"
+                         :expr "eventX()"}]}
+             {:name "tooltipY"
+              :streams [{:type "mousemove"
+                         :expr "eventY()"}]}]
    :predicates [{:name "tooltipVisible"
                  :type "=="
-                 :operands [{:signal "tooltip._id"} {:arg "id"}]}]})
+                 :operands [{:signal "tooltipData._id"} {:arg "id"}]}]})
 
 (defn generate-horizontal-bar-chart-vega-spec
   [{:keys [data height width show-count-or-percent?]}]
