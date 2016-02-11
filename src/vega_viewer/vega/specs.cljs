@@ -87,7 +87,7 @@
             :marks [{:type "text"
                      :properties {:enter {:align {:value "center"}
                                           :fill {:value "#fff"}}
-                                  :update {:y {:value 20}
+                                  :update {:y {:value 17}
                                            :x {:value 20}
                                            :text
                                            {:signal "tooltipData.frequency"}}}}]}]
