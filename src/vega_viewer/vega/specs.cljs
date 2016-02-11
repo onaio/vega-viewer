@@ -29,6 +29,8 @@
               "#787773"
               "#C5B0D5"])
 
+(def tooltip-offset 5)
+
 (def horizontal-bar-chart-spec-template
   {:data [{:name "entries"
            :values []}]
@@ -67,11 +69,10 @@
            {:type "group"
             :properties {:enter {:align {:value "center"}
                                  :fill {:value "#000"}}
-                         :update {:y {:scale "category"
-                                      :signal "tooltip.category"}
-                                  :dy {:scale "category" :band true :mult 0.7}
-                                  :x {:scale "frequency"
-                                      :signal "tooltip.layout_mid"}
+                         :update {:y {:signal "tooltipY"
+                                      :offset tooltip-offset}
+                                  :x {:signal "tooltipX"
+                                      :offset tooltip-offset}
                                   :height {:rule [{:predicate
                                                    {:name "isTooltipVisible?"}
                                                    :value 0}
@@ -84,14 +85,20 @@
                                   :update {:y {:value 20}
                                            :x {:value 20}
                                            :text
-                                           {:signal "tooltip.frequency"}}}}]}]
-   :signals [{:name "tooltip"
+                                           {:signal "tooltipData.frequency"}}}}]}]
+   :signals [{:name "tooltipData"
               :init {}
               :streams [{:type "rect:mouseover" :expr "datum"}
-                        {:type "rect:mouseout" :expr "{}"}]}]
+                        {:type "rect:mouseout" :expr "{}"}]}
+             {:name "tooltipX"
+              :init {}
+              :streams [{:type "mousemove" :expr "eventX()"}]}
+             {:name "tooltipY"
+              :init {}
+              :streams [{:type "mousemove" :expr "eventY()"}]}]
    :predicates [{:name "isTooltipVisible?"
                  :type "==",
-                 :operands [{:signal "tooltip._id"}
+                 :operands [{:signal "tooltipData._id"}
                             {:arg "id"}]}]})
 
 (def histogram-spec-template
