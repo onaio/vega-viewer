@@ -48,7 +48,8 @@
            :type "x"
            :properties {:labels {:text {:template "{{datum.data}}"}}}}
           {:scale "category" :type "y"}]
-   :marks [{:from {:data "entries"}
+   :marks [{:name "bars"
+            :from {:data "entries"}
             :type "rect"
             :properties {:enter {:y {:scale "category"
                                      :field "category"
@@ -59,13 +60,17 @@
                                  :x2 {:value 0}}
                          :update {:fill {:value bar-color}}}}
            {:type "text"
-            :from {:mark "rect"}
-            :properties {:enter {:x {:field "x2" :offset 1}
-                                 :y {:field "y"}
+            :from {:data "entries"}
+            :properties {:enter {:x {:scale "frequency"
+                                     :field "frequency"
+                                     :offset 3}
+                                 :y {:scale "category"
+                                     :field "category"
+                                     :offset (/ bar-height 2)}
                                  :dy {:field "height" :mult 0.5}
                                  :fill {:value "black"}
                                  :baseline {:value "middle"}
-                                 :text {:field "datum.frequency"}}}}
+                                 :text {:field "frequency"}}}}
            {:type "group"
             :properties {:enter {:align {:value "center"}
                                  :fill {:value "#000"}}
@@ -233,8 +238,13 @@
 (defn generate-horizontal-bar-chart-vega-spec
   [{:keys [data height width show-count-or-percent?]}]
   (let [count-or-percent #(if (= show-count-or-percent? :percent)
-                            (assoc-in % [:axes 0 :properties :labels :text
-                                         :template] "{{datum.data}} %") %)]
+                            (-> %
+                                (assoc-in [:axes 0 :properties :labels :text
+                                           :template]
+                                          "{{datum.data}} %")
+                                (assoc-in [:marks 1 :properties :enter :text]
+                                          {:template "{{datum.frequency}}%"}))
+                            %)]
     (-> horizontal-bar-chart-spec-template
         (assoc-in [:data 0 :values] data)
         (assoc-in [:height] (or height
