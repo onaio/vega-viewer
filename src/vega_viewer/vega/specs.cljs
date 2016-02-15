@@ -171,7 +171,8 @@
              :type "ordinal"
              :range palette
              :domain {:data "table"
-                      :field "group"}}]
+                      :field "group"
+                      :sort true}}]
    :axes [{:type "y"
            :scale "y"}
           {:type "x"
