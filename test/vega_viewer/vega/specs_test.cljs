@@ -59,10 +59,15 @@
            {"category" "area3" "group" ["group1"] "frequency" 4}
            {"category" "area3" "group" ["group1"] "frequency" 6}]
           spec (generate-stacked-horizontal-bar-chart-vega-spec {:data data})
+          spec-with-percent
+          (generate-stacked-horizontal-bar-chart-vega-spec
+           {:data data
+            :show-count-or-percent? true})
           spec-as-json (clj->js spec)
           valid? (.validate js/tv4
                             spec-as-json
                             vega-schema
                             true
                             true)]
-      (is valid? (generate-error-report spec)))))
+      (is valid? (generate-error-report spec))
+      (is valid? (generate-error-report spec-with-percent)))))
