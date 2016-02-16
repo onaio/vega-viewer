@@ -268,13 +268,28 @@
       (assoc-in [:width] (or width 600))))
 
 (defn generate-stacked-horizontal-bar-chart-vega-spec
-  [{:keys [data height width]}]
-  (-> stacked-horizontal-bar-chart-spec-template
-      (assoc-in [:data 0 :values] data)
-      (assoc-in [:height] (or height
-                              (->> data
-                                   (map #(get-in % ["category"]))
-                                   (set)
-                                   (count)
-                                   (* band-width))))
-      (assoc-in [:width] (or width 600))))
+  [{:keys [data height width show-count-or-percent?]}]
+  (let [count-or-percent #(if (= show-count-or-percent? :percent)
+                            (->
+                             %
+                             (assoc-in [:marks 0 :from :transform 0 :offset]
+                                       "normalize")
+                             (assoc-in [:scales 1 :domainMax] 1)
+                             (assoc-in [:axes 1 :format] "%")
+                             (update-in [:marks 1 :marks 1 :properties
+                                         :update :text]
+                                        dissoc :signal)
+                             (assoc-in [:marks 1 :marks 1 :properties
+                                        :update :text :template]
+                                       "{{tooltipData.frequency}} %"))
+                            %)]
+    (-> stacked-horizontal-bar-chart-spec-template
+        (assoc-in [:data 0 :values] data)
+        (assoc-in [:height] (or height
+                                (->> data
+                                     (map #(get-in % ["category"]))
+                                     (set)
+                                     (count)
+                                     (* band-width))))
+        (assoc-in [:width] (or width 600))
+        count-or-percent)))
