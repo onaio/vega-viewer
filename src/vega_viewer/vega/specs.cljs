@@ -285,7 +285,14 @@
                              (update-in [:marks 1 :marks 1 :properties
                                          :update :text]
                                         dissoc :signal)
-                             (show-percent-sign-on-tooltip 1))
+                             (assoc-in [:marks 1 :marks 1 :properties
+                                        :update :text]
+                                       {:rule
+                                        [{:predicate
+                                          {:name "tooltipVisible"}}
+                                         {:template
+                                          "{{tooltipData.frequency}} %"}]})
+                             (show-percent-sign-on-tooltip 1)))
                             %)]
     (-> stacked-horizontal-bar-chart-spec-template
         (assoc-in [:data 0 :values] data)
