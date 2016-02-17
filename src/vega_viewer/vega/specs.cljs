@@ -213,8 +213,7 @@
                          :hover {:fillOpacity {:value 0.9}}}}
            {:type "group"
             :properties {:enter {:align {:value "center"}
-                                 :fill {:value "#000"}
-                                 }
+                                 :fill {:value "#000"}}
                          :update {:y {:signal "tooltipY"
                                       :offset tooltip-offset}
                                   :x {:signal "tooltipX"
