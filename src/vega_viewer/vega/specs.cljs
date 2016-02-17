@@ -30,6 +30,7 @@
               "#C5B0D5"])
 
 (def tooltip-offset 5)
+
 (defn get-tooltip-text-marks
   [label-field value-field]
   [{:type "text"
@@ -43,8 +44,8 @@
                          :fill {:value "#fff"}}
                  :update {:y {:value 35}
                           :x {:value 10}
-                          :text {:signal (str "tooltipData." value-field)}}}}]
-  )
+                          :text {:signal (str "tooltipData." value-field)}}}}])
+
 (def horizontal-bar-chart-spec-template
   {:data [{:name "entries"
            :values []}]
@@ -219,7 +220,7 @@
                                   :x {:signal "tooltipX"
                                       :offset tooltip-offset}
                                   :height {:rule
-                                           [{:predicate {:name "isTooltipVisible"}
+                                           [{:predicate {:name "isTooltipVisible?"}
                                              :value 0}
                                             {:value 40}]}
                                   :width {:value 200}
@@ -235,9 +236,16 @@
              {:name "tooltipY"
               :streams [{:type "mousemove"
                          :expr "eventY()"}]}]
-   :predicates [{:name "isTooltipVisible"
+   :predicates [{:name "isTooltipVisible?"
                  :type "=="
                  :operands [{:signal "tooltipData._id"} {:arg "id"}]}]})
+
+(defn show-percent-sign-on-tooltip
+  [spec tooltip-mark-index]
+  (assoc-in spec
+            [:marks tooltip-mark-index :marks 1 :properties :update :text]
+            {:rule [{:predicate {:name "isTooltipVisible?"}}
+                    {:template "{{tooltipData.frequency}} %"}]}))
 
 (defn generate-horizontal-bar-chart-vega-spec
   [{:keys [data height width show-count-or-percent?]}]
@@ -247,7 +255,8 @@
                                            :template]
                                           "{{datum.data}} %")
                                 (assoc-in [:marks 1 :properties :enter :text]
-                                          {:template "{{datum.frequency}}%"}))
+                                          {:template "{{datum.frequency}}%"})
+                                (show-percent-sign-on-tooltip 2))
                             %)]
     (-> horizontal-bar-chart-spec-template
         (assoc-in [:data 0 :values] data)
@@ -277,13 +286,7 @@
                              (update-in [:marks 1 :marks 1 :properties
                                          :update :text]
                                         dissoc :signal)
-                             (assoc-in [:marks 1 :marks 1 :properties
-                                        :update :text]
-                                       {:rule
-                                        [{:predicate
-                                          {:name "isTooltipVisible"}}
-                                         {:template
-                                          "{{tooltipData.frequency}} %"}]}))
+                             (show-percent-sign-on-tooltip 1))
                             %)]
     (-> stacked-horizontal-bar-chart-spec-template
         (assoc-in [:data 0 :values] data)
