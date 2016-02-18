@@ -282,9 +282,13 @@
                                        "normalize")
                              (assoc-in [:scales 1 :domainMax] 1)
                              (assoc-in [:axes 1 :format] "%")
-                             (update-in [:marks 1 :marks 1 :properties
-                                         :update :text]
-                                        dissoc :signal)
+                             (assoc-in [:marks 1 :marks 1 :properties
+                                        :update :text]
+                                       {:rule
+                                        [{:predicate
+                                          {:name "tooltipVisible"}}
+                                         {:template
+                                          "{{tooltipData.frequency}} %"}]})
                              (show-percent-sign-on-tooltip 1))
                             %)]
     (-> stacked-horizontal-bar-chart-spec-template
