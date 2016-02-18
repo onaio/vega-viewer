@@ -84,8 +84,9 @@
              :domain {:data "entries" :field "frequency"}}]
    :axes [{:scale "frequency"
            :type "x"
+           :layer "back"
            :properties {:labels {:text {:template "{{datum.data}}"}}}}
-          {:scale "category" :type "y"}]
+          {:scale "category" :type "y" :layer "back"}]
    :marks [{:name "bars"
             :from {:data "entries"}
             :type "rect"
@@ -164,8 +165,8 @@
              :type "linear"
              :domain {:data "summary" :field "count" :sort true}
              :range "height"}]
-   :axes [{:type "x" :scale "x" :ticks 10}
-          {:type "y" :scale "y"}]
+   :axes [{:type "x" :scale "x" :ticks 10 :layer "back"}
+          {:type "y" :scale "y" :layer "back"}]
    :marks [{:type "rect"
             :properties {:enter
                          {:x {:scale "x" :field "bin_start" :offset 1}
@@ -212,9 +213,11 @@
                       :field "group"
                       :sort true}}]
    :axes [{:type "y"
-           :scale "y"}
+           :scale "y"
+           :layer "back"}
           {:type "x"
-           :scale "x"}]
+           :scale "x"
+           :layer "back"}]
    :legends [{:fill "color"
               :properties {:labels
                            {:text
