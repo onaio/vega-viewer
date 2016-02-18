@@ -43,13 +43,21 @@
         rule-x-displacement 160
         rule-y-displacement 0
         rule-height tooltip-height
-        tooltip-text-y-displacement 22]
+        tooltip-text-y-displacement 22
+        tooltip-text-color "#444"]
     [{:type "text"
       :properties {:enter {:align {:value "left"}
-                           :fill {:value "#444"}}
+                           :fill {:value tooltip-text-color}}
                    :update {:y {:value tooltip-text-y-displacement}
                             :x {:value label-text-x-displacement}
                             :text {:signal (str "tooltipData." label-field)}}}}
+     {:type "text"
+      :properties {:enter {:align {:value "center"}
+                           :fill {:value tooltip-text-color}}
+                   :update {:y {:value tooltip-text-y-displacement}
+                            :x {:value value-text-x-displacement}
+                            :text
+                            {:signal (str "tooltipData." value-field)}}}}
      {:type "rule"
       :properties
       {:update
@@ -59,14 +67,7 @@
         :y2 {:rule [{:predicate {:name "isTooltipVisible?"}
                      :value 0}
                     {:value rule-height}]}
-        :strokeWidth {:value 1}}}}
-     {:type "text"
-      :properties {:enter {:align {:value "center"}
-                           :fill {:value "#444"}}
-                   :update {:y {:value tooltip-text-y-displacement}
-                            :x {:value value-text-x-displacement}
-                            :text
-                            {:signal (str "tooltipData." value-field)}}}}]))
+        :strokeWidth {:value 1}}}}]))
 
 (def horizontal-bar-chart-spec-template
   {:data [{:name "entries"
@@ -323,7 +324,7 @@
                                         [{:predicate
                                           {:name "tooltipVisible"}}
                                          {:template
-                                          "{{tooltipData.frequency}} %"}]})
+                                          "{{tooltipData.frequency}}%"}]})
                              (show-percent-sign-on-tooltip 1))
                             %)]
     (-> stacked-horizontal-bar-chart-spec-template
