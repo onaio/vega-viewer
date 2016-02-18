@@ -31,6 +31,21 @@
 
 (def tooltip-offset 5)
 
+(defn get-tooltip-text-marks
+  [label-field value-field]
+  [{:type "text"
+    :properties {:enter {:align {:value "left"}
+                         :fill {:value "#fff"}}
+                 :update {:y {:value 15}
+                          :x {:value 10}
+                          :text {:signal (str "tooltipData." label-field)}}}}
+   {:type "text"
+    :properties {:enter {:align {:value "left"}
+                         :fill {:value "#fff"}}
+                 :update {:y {:value 35}
+                          :x {:value 10}
+                          :text {:signal (str "tooltipData." value-field)}}}}])
+
 (def horizontal-bar-chart-spec-template
   {:data [{:name "entries"
            :values []}]
@@ -81,16 +96,10 @@
                                   :height {:rule [{:predicate
                                                    {:name "isTooltipVisible?"}
                                                    :value 0}
-                                                  {:value bar-height}]}
-                                  :fillOpacity {:value 0.9}
-                                  :width {:value 40}}}
-            :marks [{:type "text"
-                     :properties {:enter {:align {:value "center"}
-                                          :fill {:value "#fff"}}
-                                  :update {:y {:value 17}
-                                           :x {:value 20}
-                                           :text
-                                           {:signal "tooltipData.frequency"}}}}]}]
+                                                  {:value 40}]}
+                                  :width {:value 200}
+                                  :fillOpacity {:value 0.9}}}
+            :marks (get-tooltip-text-marks "category" "frequency")}]
    :signals [{:name "tooltipData"
               :init {}
               :streams [{:type "rect:mouseover" :expr "datum"}
@@ -204,30 +213,18 @@
                          :hover {:fillOpacity {:value 0.9}}}}
            {:type "group"
             :properties {:enter {:align {:value "center"}
-                                 :fill {:value "#000"}
-                                 :width {:value 200}}
+                                 :fill {:value "#000"}}
                          :update {:y {:signal "tooltipY"
                                       :offset tooltip-offset}
                                   :x {:signal "tooltipX"
                                       :offset tooltip-offset}
                                   :height {:rule
-                                           [{:predicate {:name "tooltipVisible"}
+                                           [{:predicate {:name "isTooltipVisible?"}
                                              :value 0}
                                             {:value 40}]}
+                                  :width {:value 200}
                                   :fillOpacity {:value 0.9}}}
-            :marks [{:type "text"
-                     :properties {:enter {:align {:value "left"}
-                                          :fill {:value "#fff"}}
-                                  :update {:y {:value 15}
-                                           :x {:value 10}
-                                           :text {:signal "tooltipData.group"}}}}
-                    {:type "text"
-                     :properties
-                     {:enter {:align {:value "left"}
-                              :fill {:value "#fff"}}
-                      :update {:y {:value 35}
-                               :x {:value 10}
-                               :text {:signal "tooltipData.frequency"}}}}]}]
+            :marks (get-tooltip-text-marks "group" "frequency")}]
    :signals [{:name "tooltipData"
               :init {}
               :streams [{:type "rect:mouseover" :expr "datum"}
@@ -238,9 +235,16 @@
              {:name "tooltipY"
               :streams [{:type "mousemove"
                          :expr "eventY()"}]}]
-   :predicates [{:name "tooltipVisible"
+   :predicates [{:name "isTooltipVisible?"
                  :type "=="
                  :operands [{:signal "tooltipData._id"} {:arg "id"}]}]})
+
+(defn show-percent-sign-on-tooltip
+  [spec tooltip-mark-index]
+  (assoc-in spec
+            [:marks tooltip-mark-index :marks 1 :properties :update :text]
+            {:rule [{:predicate {:name "isTooltipVisible?"}}
+                    {:template "{{tooltipData.frequency}} %"}]}))
 
 (defn generate-horizontal-bar-chart-vega-spec
   [{:keys [data height width show-count-or-percent?]}]
@@ -250,7 +254,8 @@
                                            :template]
                                           "{{datum.data}} %")
                                 (assoc-in [:marks 1 :properties :enter :text]
-                                          {:template "{{datum.frequency}}%"}))
+                                          {:template "{{datum.frequency}}%"})
+                                (show-percent-sign-on-tooltip 2))
                             %)]
     (-> horizontal-bar-chart-spec-template
         (assoc-in [:data 0 :values] data)
@@ -280,9 +285,7 @@
                              (update-in [:marks 1 :marks 1 :properties
                                          :update :text]
                                         dissoc :signal)
-                             (assoc-in [:marks 1 :marks 1 :properties
-                                        :update :text :template]
-                                       "{{tooltipData.frequency}} %"))
+                             (show-percent-sign-on-tooltip 1))
                             %)]
     (-> stacked-horizontal-bar-chart-spec-template
         (assoc-in [:data 0 :values] data)
