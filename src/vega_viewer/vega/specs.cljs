@@ -6,6 +6,7 @@
 (def y-offset 3)
 (def histogram-height 200)
 (def default-bin-size 15)
+(def default-chart-width 600)
 (def bar-color "#24B3B5")
 
 (def palette ["#24B3B5"
@@ -29,22 +30,44 @@
               "#787773"
               "#C5B0D5"])
 
+(def tooltip-height 36)
+(def tooltip-width 200)
 (def tooltip-offset 5)
+(def tooltip-opacity 0.95)
+(def tooltip-stroke-color "#bbb")
 
 (defn get-tooltip-text-marks
   [label-field value-field]
-  [{:type "text"
-    :properties {:enter {:align {:value "left"}
-                         :fill {:value "#fff"}}
-                 :update {:y {:value 15}
-                          :x {:value 10}
-                          :text {:signal (str "tooltipData." label-field)}}}}
-   {:type "text"
-    :properties {:enter {:align {:value "left"}
-                         :fill {:value "#fff"}}
-                 :update {:y {:value 35}
-                          :x {:value 10}
-                          :text {:signal (str "tooltipData." value-field)}}}}])
+  (let [label-text-x-displacement 10
+        value-text-x-displacement 180
+        rule-x-displacement 160
+        rule-y-displacement 0
+        rule-height tooltip-height
+        tooltip-text-y-displacement 22
+        tooltip-text-color "#444"]
+    [{:type "text"
+      :properties {:enter {:align {:value "left"}
+                           :fill {:value tooltip-text-color}}
+                   :update {:y {:value tooltip-text-y-displacement}
+                            :x {:value label-text-x-displacement}
+                            :text {:signal (str "tooltipData." label-field)}}}}
+     {:type "text"
+      :properties {:enter {:align {:value "center"}
+                           :fill {:value tooltip-text-color}}
+                   :update {:y {:value tooltip-text-y-displacement}
+                            :x {:value value-text-x-displacement}
+                            :text
+                            {:signal (str "tooltipData." value-field)}}}}
+     {:type "rule"
+      :properties
+      {:update
+       {:x {:value rule-x-displacement}
+        :y {:value rule-y-displacement}
+        :stroke {:value tooltip-stroke-color}
+        :y2 {:rule [{:predicate {:name "isTooltipVisible?"}
+                     :value 0}
+                    {:value rule-height}]}
+        :strokeWidth {:value 1}}}}]))
 
 (def horizontal-bar-chart-spec-template
   {:data [{:name "entries"
@@ -88,7 +111,7 @@
                                  :text {:field "frequency"}}}}
            {:type "group"
             :properties {:enter {:align {:value "center"}
-                                 :fill {:value "#000"}}
+                                 :fill {:value "#fff"}}
                          :update {:y {:signal "tooltipY"
                                       :offset tooltip-offset}
                                   :x {:signal "tooltipX"
@@ -96,9 +119,15 @@
                                   :height {:rule [{:predicate
                                                    {:name "isTooltipVisible?"}
                                                    :value 0}
-                                                  {:value 40}]}
-                                  :width {:value 200}
-                                  :fillOpacity {:value 0.9}}}
+                                                  {:value tooltip-height}]}
+                                  :width {:value tooltip-width}
+                                  :fillOpacity {:value tooltip-opacity}
+                                  :stroke {:value tooltip-stroke-color}
+                                  :strokeWidth
+                                  {:rule
+                                   [{:predicate {:name "isTooltipVisible?"}
+                                     :value 0}
+                                    {:value 1}]}}}
             :marks (get-tooltip-text-marks "category" "frequency")}]
    :signals [{:name "tooltipData"
               :init {}
@@ -213,17 +242,24 @@
                          :hover {:fillOpacity {:value 0.9}}}}
            {:type "group"
             :properties {:enter {:align {:value "center"}
-                                 :fill {:value "#000"}}
+                                 :fill {:value "#fff"}}
                          :update {:y {:signal "tooltipY"
                                       :offset tooltip-offset}
                                   :x {:signal "tooltipX"
                                       :offset tooltip-offset}
                                   :height {:rule
-                                           [{:predicate {:name "isTooltipVisible?"}
+                                           [{:predicate
+                                             {:name "isTooltipVisible?"}
                                              :value 0}
-                                            {:value 40}]}
-                                  :width {:value 200}
-                                  :fillOpacity {:value 0.9}}}
+                                            {:value tooltip-height}]}
+                                  :width {:value tooltip-width}
+                                  :fillOpacity {:value tooltip-opacity}
+                                  :stroke {:value tooltip-stroke-color}
+                                  :strokeWidth
+                                  {:rule
+                                   [{:predicate {:name "isTooltipVisible?"}
+                                     :value 0}
+                                    {:value 1}]}}}
             :marks (get-tooltip-text-marks "group" "frequency")}]
    :signals [{:name "tooltipData"
               :init {}
@@ -261,7 +297,7 @@
         (assoc-in [:data 0 :values] data)
         (assoc-in [:height] (or height
                                 (* (count data) band-width)))
-        (assoc-in [:width] (or width 600))
+        (assoc-in [:width] (or width default-chart-width))
         count-or-percent)))
 
 (defn generate-histogram-chart-vega-spec
@@ -271,7 +307,7 @@
                                          {"value" value})
                                        values))
       (assoc-in [:height] (or height histogram-height))
-      (assoc-in [:width] (or width 600))))
+      (assoc-in [:width] (or width default-chart-width))))
 
 (defn generate-stacked-horizontal-bar-chart-vega-spec
   [{:keys [data height width show-count-or-percent?]}]
@@ -288,7 +324,7 @@
                                         [{:predicate
                                           {:name "tooltipVisible"}}
                                          {:template
-                                          "{{tooltipData.frequency}} %"}]})
+                                          "{{tooltipData.frequency}}%"}]})
                              (show-percent-sign-on-tooltip 1))
                             %)]
     (-> stacked-horizontal-bar-chart-spec-template
@@ -299,5 +335,5 @@
                                      (set)
                                      (count)
                                      (* band-width))))
-        (assoc-in [:width] (or width 600))
+        (assoc-in [:width] (or width default-chart-width))
         count-or-percent)))
