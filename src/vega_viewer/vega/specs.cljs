@@ -50,7 +50,12 @@
                            :fill {:value tooltip-text-color}}
                    :update {:y {:value tooltip-text-y-displacement}
                             :x {:value label-text-x-displacement}
-                            :text {:signal (str "tooltipData." label-field)}}}}
+                            :text
+                            {:rule [{:predicate
+                                     {:name "isTooltipVisible?"}}
+                                    {:template (str "{{ tooltipData."
+                                                    label-field
+                                                    " | truncate:25 }}")}]}}}}
      {:type "text"
       :properties {:enter {:align {:value "center"}
                            :fill {:value tooltip-text-color}}
