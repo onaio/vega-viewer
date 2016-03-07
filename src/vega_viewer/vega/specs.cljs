@@ -104,7 +104,7 @@
                                  :height {:value bar-height
                                           :offset bar-height-offset}
                                  :x {:scale "frequency" :field "frequency"}
-                                 :x2 {:value 0}}
+                                 :x2 {:value 1}}
                          :update {:fill {:value bar-color}}}}
            {:type "text"
             :from {:data "entries"}
@@ -246,7 +246,8 @@
                                  :x {:scale "x"
                                      :field "layout_end"}
                                  :x2 {:scale "x"
-                                      :field "layout_start"}
+                                      :field "layout_start"
+                                      :offset 1}
                                  :fill {:scale "color"
                                         :field "group"}}
                          :update {:fillOpacity {:value 1}}
