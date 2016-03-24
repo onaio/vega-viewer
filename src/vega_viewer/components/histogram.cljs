@@ -6,9 +6,9 @@
              :refer [generate-histogram-chart-vega-spec]]))
 
 (defn histogram-chart
-  [cursor owner]
+  [cursor owner opts]
   (reify
     om/IRender
     (render [_]
       (let [vega-spec (generate-histogram-chart-vega-spec cursor)]
-        (html (om/build vega-viewer vega-spec))))))
+        (html (om/build vega-viewer vega-spec {:opts opts}))))))

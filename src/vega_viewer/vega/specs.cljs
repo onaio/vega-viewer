@@ -295,7 +295,7 @@
                     {:template "{{tooltipData.frequency}} %"}]}))
 
 (defn generate-horizontal-bar-chart-vega-spec
-  [{:keys [data height width show-count-or-percent?]}]
+  [{:keys [data height width show-count-or-percent?]} & {:keys [responsive?]}]
   (let [count-or-percent #(if (= show-count-or-percent? :percent)
                             (-> %
                                 (assoc-in [:axes 0 :properties :labels :text
@@ -309,20 +309,24 @@
         (assoc-in [:data 0 :values] data)
         (assoc-in [:height] (or height
                                 (* (count data) band-width)))
-        (assoc-in [:width] (or width default-chart-width))
+        (assoc-in [:width] (or width
+                               (and (not responsive?)
+                                    default-chart-width)))
         count-or-percent)))
 
 (defn generate-histogram-chart-vega-spec
-  [{values :data :keys [height width]}]
+  [{values :data :keys [height width]} & {:keys [responsive?]}]
   (-> histogram-spec-template
       (assoc-in [:data 0 :values] (map (fn [value]
                                          {"value" value})
                                        values))
       (assoc-in [:height] (or height histogram-height))
-      (assoc-in [:width] (or width default-chart-width))))
+      (assoc-in [:width] (or width
+                             (and (not responsive?)
+                                  default-chart-width)))))
 
 (defn generate-stacked-horizontal-bar-chart-vega-spec
-  [{:keys [data height width show-count-or-percent?]}]
+  [{:keys [data height width show-count-or-percent?]} & {:keys [responsive?]}]
   (let [count-or-percent #(if (= show-count-or-percent? :percent)
                             (->
                              %
@@ -347,5 +351,7 @@
                                      (set)
                                      (count)
                                      (* band-width))))
-        (assoc-in [:width] (or width default-chart-width))
+        (assoc-in [:width] (or width
+                               (and (not responsive?)
+                                    default-chart-width)))
         count-or-percent)))
