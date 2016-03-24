@@ -44,12 +44,10 @@
         (.removeEventListener js/window "resize" resize-handler)))
 
     om/IDidUpdate
-    (did-update [_ _ {previous-container-width :container-width}]
-      (let [{:keys [container-width]} (om/get-state owner)]
-        (when (not= previous-container-width container-width)
-          (render-vega-visualization vega-spec
-                                     (om/get-node owner "vega-container")
-                                     responsive?))))
+    (did-update [_ _ _]
+      (render-vega-visualization vega-spec
+                                 (om/get-node owner "vega-container")
+                                 responsive?))
 
     om/IDidMount
     (did-mount [_]
