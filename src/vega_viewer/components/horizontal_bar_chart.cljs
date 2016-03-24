@@ -13,9 +13,9 @@
     \"value\": <integer>}
    `height` is an integer representing the height of the generated chart
    `width` is an integer representing the height of the generated chart"
-  [cursor owner]
+  [cursor owner opts]
   (reify
     om/IRender
     (render [_]
       (let [vega-spec (generate-horizontal-bar-chart-vega-spec cursor)]
-        (html (om/build vega-viewer vega-spec))))))
+        (html (om/build vega-viewer vega-spec {:opts opts}))))))

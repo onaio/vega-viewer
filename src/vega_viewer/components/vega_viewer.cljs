@@ -15,7 +15,7 @@
     (om/set-state! owner :resize-handler resize-handler)))
 
 (defn vega-viewer
-  [{:keys [width] :as vega-spec} owner]
+  [{:keys [width] :as vega-spec} owner {:keys [responsive?]}]
   (reify
     om/IWillUnmount
     (will-unmount [_]
@@ -26,12 +26,12 @@
     (did-update [_ _ {previous-container-width :container-width}]
       (let [vega-container (om/get-node owner "vega-container")
             container-width (.-clientWidth vega-container)
-            vega-spec-as-js (clj->js (if width
-                                       vega-spec
+            vega-spec-as-js (clj->js (if responsive?
                                        (assoc vega-spec
                                               :width
                                               (* container-width
-                                                 0.8))))]
+                                                 0.8))
+                                       vega-spec))]
         (when (not= previous-container-width container-width)
           (js/vg.parse.spec vega-spec-as-js
                             (fn [chart]
@@ -43,12 +43,12 @@
       (set-resize-handler owner)
       (let [vega-container (om/get-node owner "vega-container")
             container-width (.-clientWidth vega-container)
-            vega-spec-as-js (clj->js (if-let [{:keys [width]} vega-spec]
-                                       vega-spec
+            vega-spec-as-js (clj->js (if responsive?
                                        (assoc vega-spec
                                               :width
                                               (* container-width
-                                                 0.8))))]
+                                                 0.8))
+                                       vega-spec))]
         (js/vg.parse.spec vega-spec-as-js
                           (fn [chart]
                             (let [view (chart #js {:el vega-container})]
