@@ -9,14 +9,14 @@
   "Add a window.resize event handler that changes the :container-width state of
    a vega-viewer instance when the window is resized"
   [owner]
-  (let [resize-handler
+  (let [container (om/get-node owner "vega-container")
+        resize-handler
         (.addEventListener js/window "resize"
                            (fn [event]
                              (om/set-state!
                               owner
                               :container-width
-                              (.-clientWidth
-                               (om/get-node owner "vega-container")))))]
+                              (.-clientWidth container))))]
     (om/set-state! owner :resize-handler resize-handler)))
 
 (defn render-vega-visualization
