@@ -309,7 +309,7 @@
         (assoc-in [:data 0 :values] data)
         (assoc-in [:height] (or height
                                 (* (count data) band-width)))
-        (assoc-in [:width] (or width default-chart-width))
+        (assoc-in [:width] width)
         count-or-percent)))
 
 (defn generate-histogram-chart-vega-spec
@@ -319,7 +319,7 @@
                                          {"value" value})
                                        values))
       (assoc-in [:height] (or height histogram-height))
-      (assoc-in [:width] (or width default-chart-width))))
+      (assoc-in [:width] width)))
 
 (defn generate-stacked-horizontal-bar-chart-vega-spec
   [{:keys [data height width show-count-or-percent?]}]
@@ -347,5 +347,5 @@
                                      (set)
                                      (count)
                                      (* band-width))))
-        (assoc-in [:width] (or width default-chart-width))
+        (assoc-in [:width] width)
         count-or-percent)))
