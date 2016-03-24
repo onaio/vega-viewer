@@ -24,11 +24,11 @@
   [spec container responsive?]
   (let [container-width (.-clientWidth container)
         spec-as-js (clj->js (if responsive?
-                                   (assoc spec
-                                          :width
-                                          (* container-width
-                                             chart-width-proportion))
-                                   spec))]
+                              (assoc spec
+                                     :width
+                                     (* container-width
+                                        chart-width-proportion))
+                              spec))]
     (js/vg.parse.spec spec-as-js
                       (fn [chart]
                         (let [view (chart #js {:el container})]
