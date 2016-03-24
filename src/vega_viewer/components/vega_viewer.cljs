@@ -10,8 +10,8 @@
                            (fn [event]
                              (om/set-state! owner
                                             :container-width
-                                            (-  (.-clientWidth (om/get-node owner "vega-container"))
-                                                30))))]
+                                            (- (.-clientWidth (om/get-node owner "vega-container"))
+                                               30))))]
     (om/set-state! owner :resize-handler resize-handler)))
 
 (defn vega-viewer
