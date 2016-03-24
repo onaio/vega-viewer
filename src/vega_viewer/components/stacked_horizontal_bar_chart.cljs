@@ -10,7 +10,5 @@
   (reify
     om/IRender
     (render [_]
-      (-> cursor
-          generate-stacked-horizontal-bar-chart-vega-spec
-          (om/build vega-viewer {:opts opts})
-          html))))
+      (let [vega-spec (generate-stacked-horizontal-bar-chart-vega-spec cursor)]
+        (html (om/build vega-viewer vega-spec {:opts opts}))))))
