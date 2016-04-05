@@ -71,10 +71,15 @@
                   {:data data
                    :show-count-or-percent? true})]
         (test-validity spec)))
-    (testing "generated stacked horizontal-bar-chart-spec is vega compliant
-              when using a user supplied palette"
-      (let [spec (generate-stacked-horizontal-bar-chart-vega-spec
-                  {:data data
-                   :user-defined-palette ["blue" "red" "green" "aqua" "fuchsia"
-                                          "black" "pink"]})]
-        (test-validity spec)))))
+    (let [user-defined-palette ["blue" "red" "green" "aqua" "fuchsia" "black"
+                                "pink"]
+          spec (generate-stacked-horizontal-bar-chart-vega-spec
+                {:data data}
+                :user-defined-palette user-defined-palette)
+          {[_ _ {palette :range}] :scales} spec]
+      (testing "generated stacked horizontal-bar-chart-spec is vega compliant
+                when using a user defined palette"
+        (test-validity spec))
+      (testing "generated spec contains user defined palette"
+        (is (= user-defined-palette
+               palette))))))
