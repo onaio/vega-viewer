@@ -13,8 +13,6 @@
                      read-file
                      json.parse))
 
-
-
 (defn generate-error-report
   "Generate a detailed message to show in case of test failures"
   [spec]
