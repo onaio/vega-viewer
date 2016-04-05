@@ -6,9 +6,14 @@
              :refer [generate-stacked-horizontal-bar-chart-vega-spec]]))
 
 (defn stacked-horizontal-bar-chart
-  [cursor owner opts]
+  [cursor owner {:keys [user-defined-palette]
+                 :as opts}]
   (reify
     om/IRender
     (render [_]
-      (let [vega-spec (generate-stacked-horizontal-bar-chart-vega-spec cursor)]
+      (let [vega-spec
+            (generate-stacked-horizontal-bar-chart-vega-spec
+             cursor
+             :user-defined-palette
+             user-defined-palette)]
         (html (om/build vega-viewer vega-spec {:opts opts}))))))
