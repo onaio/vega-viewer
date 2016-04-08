@@ -216,7 +216,6 @@
                       :field "sum_frequency"}}
             {:name "color"
              :type "ordinal"
-             :range palette
              :domain {:data "table"
                       :field "group"
                       :sort true}}]
@@ -326,7 +325,8 @@
                                   default-chart-width)))))
 
 (defn generate-stacked-horizontal-bar-chart-vega-spec
-  [{:keys [data height width show-count-or-percent?]} & {:keys [responsive?]}]
+  [{:keys [data height width show-count-or-percent?]}
+   & {:keys [responsive? user-defined-palette]}]
   (let [count-or-percent #(if (= show-count-or-percent? :percent)
                             (->
                              %
@@ -354,4 +354,7 @@
         (assoc-in [:width] (or width
                                (and (not responsive?)
                                     default-chart-width)))
+        (assoc-in [:scales 2 :range] (if (seq user-defined-palette)
+                                       user-defined-palette
+                                       palette))
         count-or-percent)))

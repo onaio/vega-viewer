@@ -1,4 +1,4 @@
-(defproject onaio/vega-viewer "0.3.0"
+(defproject onaio/vega-viewer "0.3.1"
   :description "Om component that renders a vega chart from a spec"
   :url "https://github.com/onaio/vega-viewer"
   :license {:name "Eclipse Public License"
