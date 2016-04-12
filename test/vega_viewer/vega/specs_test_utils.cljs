@@ -1,4 +1,4 @@
-(ns vega-viewer.vega.specs-test
+(ns vega-viewer.vega.specs-test-utils
   (:require-macros [vega-viewer.macros :refer [read-file]])
   (:require [cljs.test :refer-macros [deftest testing is]]
             [cljsjs.tv4]

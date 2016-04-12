@@ -2,7 +2,7 @@
   (:require [om.core :as om :include-macros true]
             [sablono.core :refer-macros [html]]
             [vega-viewer.components.vega-viewer :refer [vega-viewer]]
-            [vega-viewer.vega.specs
+            [vega-viewer.vega.specs.horizontal-bar-chart
              :refer [generate-horizontal-bar-chart-vega-spec]]))
 
 (defn horizontal-bar-chart

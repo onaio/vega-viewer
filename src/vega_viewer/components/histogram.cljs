@@ -2,7 +2,7 @@
   (:require [om.core :as om :include-macros true]
             [sablono.core :refer-macros [html]]
             [vega-viewer.components.vega-viewer :refer [vega-viewer]]
-            [vega-viewer.vega.specs
+            [vega-viewer.vega.specs.histogram
              :refer [generate-histogram-chart-vega-spec]]))
 
 (defn histogram-chart
