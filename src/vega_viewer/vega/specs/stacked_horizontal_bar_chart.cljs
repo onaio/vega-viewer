@@ -1,6 +1,9 @@
 (ns vega-viewer.vega.specs.stacked-horizontal-bar-chart
   (:require [vega-viewer.vega.specs.constants
-             :refer [band-width bar-height default-chart-width palette tooltip-height tooltip-offset tooltip-opacity tooltip-stroke-color tooltip-width y-offset]]
+             :refer [band-width bar-height bar-height-offset
+                     default-chart-width palette tooltip-height
+                     tooltip-offset tooltip-opacity tooltip-stroke-color
+                     tooltip-width y-offset]]
             [vega-viewer.vega.specs.utils
              :refer [get-tooltip-text-marks show-percent-sign-on-tooltip]]))
 
