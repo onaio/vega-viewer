@@ -3,7 +3,9 @@
              :as test
              :refer-macros [run-tests]
              :refer [report successful?]]
-            [vega-viewer.vega.specs-test]))
+            [vega-viewer.vega.specs.histogram-test]
+            [vega-viewer.vega.specs.horizontal-bar-chart-test]
+            [vega-viewer.vega.specs.stacked-horizontal-bar-chart-test]))
 
 (enable-console-print!)
 
@@ -17,6 +19,8 @@
   (if (successful?
        (run-tests
         (test/empty-env ::test/default)
-        'vega-viewer.vega.specs-test))
+        'vega-viewer.vega.specs.histogram-test
+        'vega-viewer.vega.specs.horizontal-bar-chart-test
+        'vega-viewer.vega.specs.stacked-horizontal-bar-chart-test))
     0
     1))
