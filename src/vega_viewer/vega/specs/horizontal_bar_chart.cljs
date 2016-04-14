@@ -84,7 +84,7 @@
                             {:arg "id"}]}]})
 
 (defn generate-horizontal-bar-chart-vega-spec
-  [{:keys [data height width show-count-or-percent?]} & {:keys [responsive?]}]
+  [{:keys [data height width show-count-or-percent? status-text]} & {:keys [responsive?]}]
   (let [count-or-percent #(if (= show-count-or-percent? :percent)
                             (-> %
                                 (assoc-in [:axes 0 :properties :labels :text
@@ -101,4 +101,18 @@
         (assoc-in [:width] (or width
                                (and (not responsive?)
                                     default-chart-width)))
+        (update :marks
+                (fn [marks]
+                  (if status-text
+                    (conj marks
+                          {:type "text"
+                           :name "status-text"
+                           :properties
+                           {:enter
+                            {:fill {:value "#999"}
+                             :text {:value status-text}
+                             :y {:offset 40
+                                 :value (* band-width
+                                           (count data))}}}})
+                    marks)))
         count-or-percent)))
