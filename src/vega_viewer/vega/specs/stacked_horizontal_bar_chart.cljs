@@ -102,6 +102,13 @@
                  :type "=="
                  :operands [{:signal "tooltipData._id"} {:arg "id"}]}]})
 
+(defn- get-category-count
+  [data]
+  (->> data
+       (map #(get-in % ["category"]))
+       (set)
+       (count)))
+
 (defn generate-stacked-horizontal-bar-chart-vega-spec
   [{:keys [data height width show-count-or-percent? status-text]}
    & {:keys [responsive? user-defined-palette]}]
@@ -120,20 +127,18 @@
                                          {:template
                                           "{{tooltipData.frequency}}%"}]})
                              (show-percent-sign-on-tooltip 1))
-                            %)]
+                            %)
+        category-count (when (or height status-text)
+                         (get-category-count data))]
     (-> stacked-horizontal-bar-chart-spec-template
         (assoc-in [:data 0 :values] data)
         (assoc-in [:height] (or height
-                                (->> data
-                                     (map #(get-in % ["category"]))
-                                     (set)
-                                     (count)
-                                     (* band-width))))
+                                (* category-count band-width)))
         (assoc-in [:width] (or width
                                (and (not responsive?)
                                     default-chart-width)))
         (assoc-in [:scales 2 :range] (if (seq user-defined-palette)
                                        user-defined-palette
                                        palette))
-        (set-status-text status-text (count data))
+        (set-status-text status-text category-count)
         count-or-percent)))
