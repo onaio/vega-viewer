@@ -5,7 +5,9 @@
                      tooltip-offset tooltip-opacity tooltip-stroke-color
                      y-offset]]
             [vega-viewer.vega.specs.utils
-             :refer [get-tooltip-text-marks show-percent-sign-on-tooltip]]))
+             :refer [get-tooltip-text-marks
+                     set-status-text
+                     show-percent-sign-on-tooltip]]))
 
 (def horizontal-bar-chart-spec-template
   {:data [{:name "entries"
@@ -101,18 +103,5 @@
         (assoc-in [:width] (or width
                                (and (not responsive?)
                                     default-chart-width)))
-        (update :marks
-                (fn [marks]
-                  (if status-text
-                    (conj marks
-                          {:type "text"
-                           :name "status-text"
-                           :properties
-                           {:enter
-                            {:fill {:value "#999"}
-                             :text {:value status-text}
-                             :y {:offset 40
-                                 :value (* band-width
-                                           (count data))}}}})
-                    marks)))
+        (set-status-text status-text (count data))
         count-or-percent)))

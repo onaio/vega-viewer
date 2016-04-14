@@ -1,6 +1,6 @@
 (ns vega-viewer.vega.specs.utils
   (:require [vega-viewer.vega.specs.constants
-             :refer [tooltip-height tooltip-stroke-color]]))
+             :refer [band-width tooltip-height tooltip-stroke-color]]))
 
 (defn get-tooltip-text-marks
   [label-field value-field]
@@ -42,6 +42,23 @@
                      :value 0}
                     {:value rule-height}]}
         :strokeWidth {:value 1}}}}]))
+
+(defn set-status-text
+  [spec status-text number-of-entries]
+  (update spec
+          :marks
+          (fn [marks]
+            (if status-text
+              (conj marks
+                    {:type "text"
+                     :name "status-text"
+                     :properties
+                     {:enter
+                      {:fill {:value "#999"}
+                       :text {:value status-text}
+                       :y {:offset 40
+                           :value (* band-width number-of-entries)}}}})
+              marks))))
 
 (defn show-percent-sign-on-tooltip
   [spec tooltip-mark-index]

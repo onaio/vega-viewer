@@ -5,7 +5,9 @@
                      tooltip-offset tooltip-opacity tooltip-stroke-color
                      tooltip-width y-offset]]
             [vega-viewer.vega.specs.utils
-             :refer [get-tooltip-text-marks show-percent-sign-on-tooltip]]))
+             :refer [get-tooltip-text-marks
+                     set-status-text
+                     show-percent-sign-on-tooltip]]))
 
 (def stacked-horizontal-bar-chart-spec-template
   {:data [{:name "table"}
@@ -101,7 +103,7 @@
                  :operands [{:signal "tooltipData._id"} {:arg "id"}]}]})
 
 (defn generate-stacked-horizontal-bar-chart-vega-spec
-  [{:keys [data height width show-count-or-percent?]}
+  [{:keys [data height width show-count-or-percent? status-text]}
    & {:keys [responsive? user-defined-palette]}]
   (let [count-or-percent #(if (= show-count-or-percent? :percent)
                             (->
@@ -133,4 +135,5 @@
         (assoc-in [:scales 2 :range] (if (seq user-defined-palette)
                                        user-defined-palette
                                        palette))
+        (set-status-text status-text (count data))
         count-or-percent)))
