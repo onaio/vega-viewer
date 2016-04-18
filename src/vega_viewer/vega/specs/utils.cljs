@@ -44,7 +44,7 @@
         :strokeWidth {:value 1}}}}]))
 
 (defn set-status-text
-  [spec status-text number-of-entries]
+  [spec status-text chart-height]
   (update spec
           :marks
           (fn [marks]
@@ -57,7 +57,7 @@
                       {:fill {:value "#999"}
                        :text {:value status-text}
                        :y {:offset 40
-                           :value (* band-width number-of-entries)}}}})
+                           :value chart-height}}}})
               marks))))
 
 (defn show-percent-sign-on-tooltip

@@ -129,16 +129,16 @@
                              (show-percent-sign-on-tooltip 1))
                             %)
         category-count (when (or height status-text)
-                         (get-category-count data))]
+                         (get-category-count data))
+        chart-height (or height (* category-count band-width))]
     (-> stacked-horizontal-bar-chart-spec-template
         (assoc-in [:data 0 :values] data)
-        (assoc-in [:height] (or height
-                                (* category-count band-width)))
-        (assoc-in [:width] (or width
-                               (and (not responsive?)
-                                    default-chart-width)))
+        (assoc :height chart-height)
+        (assoc :width (or width
+                          (and (not responsive?)
+                               default-chart-width)))
         (assoc-in [:scales 2 :range] (if (seq user-defined-palette)
                                        user-defined-palette
                                        palette))
-        (set-status-text status-text category-count)
+        (set-status-text status-text chart-height)
         count-or-percent)))

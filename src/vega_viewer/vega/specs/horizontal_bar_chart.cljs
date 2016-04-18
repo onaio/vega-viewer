@@ -95,13 +95,13 @@
                                 (assoc-in [:marks 1 :properties :enter :text]
                                           {:template "{{datum.frequency}}%"})
                                 (show-percent-sign-on-tooltip 2))
-                            %)]
+                            %)
+        chart-height (or height (* (count data) band-width))]
     (-> horizontal-bar-chart-spec-template
         (assoc-in [:data 0 :values] data)
-        (assoc-in [:height] (or height
-                                (* (count data) band-width)))
-        (assoc-in [:width] (or width
-                               (and (not responsive?)
-                                    default-chart-width)))
-        (set-status-text status-text (count data))
+        (assoc :height chart-height)
+        (assoc :width (or width
+                          (and (not responsive?)
+                               default-chart-width)))
+        (set-status-text status-text chart-height)
         count-or-percent)))
