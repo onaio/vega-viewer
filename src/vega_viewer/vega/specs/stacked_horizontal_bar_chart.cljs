@@ -5,7 +5,9 @@
                      tooltip-offset tooltip-opacity tooltip-stroke-color
                      tooltip-width y-offset]]
             [vega-viewer.vega.specs.utils
-             :refer [get-tooltip-text-marks show-percent-sign-on-tooltip]]))
+             :refer [get-tooltip-text-marks
+                     set-status-text
+                     show-percent-sign-on-tooltip]]))
 
 (def stacked-horizontal-bar-chart-spec-template
   {:data [{:name "table"}
@@ -100,8 +102,15 @@
                  :type "=="
                  :operands [{:signal "tooltipData._id"} {:arg "id"}]}]})
 
+(defn- get-category-count
+  [data]
+  (->> data
+       (map #(get-in % ["category"]))
+       (set)
+       (count)))
+
 (defn generate-stacked-horizontal-bar-chart-vega-spec
-  [{:keys [data height width show-count-or-percent?]}
+  [{:keys [data height width show-count-or-percent? status-text]}
    & {:keys [responsive? user-defined-palette]}]
   (let [count-or-percent #(if (= show-count-or-percent? :percent)
                             (->
@@ -118,19 +127,18 @@
                                          {:template
                                           "{{tooltipData.frequency}}%"}]})
                              (show-percent-sign-on-tooltip 1))
-                            %)]
+                            %)
+        category-count (when (or height status-text)
+                         (get-category-count data))
+        chart-height (or height (* category-count band-width))]
     (-> stacked-horizontal-bar-chart-spec-template
         (assoc-in [:data 0 :values] data)
-        (assoc-in [:height] (or height
-                                (->> data
-                                     (map #(get-in % ["category"]))
-                                     (set)
-                                     (count)
-                                     (* band-width))))
-        (assoc-in [:width] (or width
-                               (and (not responsive?)
-                                    default-chart-width)))
+        (assoc :height chart-height)
+        (assoc :width (or width
+                          (and (not responsive?)
+                               default-chart-width)))
         (assoc-in [:scales 2 :range] (if (seq user-defined-palette)
                                        user-defined-palette
                                        palette))
+        (set-status-text status-text chart-height)
         count-or-percent)))

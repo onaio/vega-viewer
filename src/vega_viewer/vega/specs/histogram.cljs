@@ -1,7 +1,8 @@
 (ns vega-viewer.vega.specs.histogram
   (:require [vega-viewer.vega.specs.constants
              :refer [bar-color default-bin-size default-chart-width
-                     histogram-height]]))
+                     histogram-height]]
+            [vega-viewer.vega.specs.utils :refer [set-status-text]]))
 
 (def histogram-spec-template
   {:data [{:name "entries"
@@ -44,12 +45,13 @@
                                  :text {:field "datum.count"}}}}]})
 
 (defn generate-histogram-chart-vega-spec
-  [{values :data :keys [height width]} & {:keys [responsive?]}]
+  [{values :data :keys [height status-text width]} & {:keys [responsive?]}]
   (-> histogram-spec-template
       (assoc-in [:data 0 :values] (map (fn [value]
                                          {"value" value})
                                        values))
-      (assoc-in [:height] (or height histogram-height))
-      (assoc-in [:width] (or width
-                             (and (not responsive?)
-                                  default-chart-width)))))
+      (assoc :height (or height histogram-height))
+      (assoc :width (or width
+                        (and (not responsive?)
+                             default-chart-width)))
+      (set-status-text status-text histogram-height)))

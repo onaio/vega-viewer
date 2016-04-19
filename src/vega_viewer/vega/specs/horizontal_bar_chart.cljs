@@ -5,7 +5,9 @@
                      tooltip-offset tooltip-opacity tooltip-stroke-color
                      y-offset]]
             [vega-viewer.vega.specs.utils
-             :refer [get-tooltip-text-marks show-percent-sign-on-tooltip]]))
+             :refer [get-tooltip-text-marks
+                     set-status-text
+                     show-percent-sign-on-tooltip]]))
 
 (def horizontal-bar-chart-spec-template
   {:data [{:name "entries"
@@ -84,7 +86,7 @@
                             {:arg "id"}]}]})
 
 (defn generate-horizontal-bar-chart-vega-spec
-  [{:keys [data height width show-count-or-percent?]} & {:keys [responsive?]}]
+  [{:keys [data height width show-count-or-percent? status-text]} & {:keys [responsive?]}]
   (let [count-or-percent #(if (= show-count-or-percent? :percent)
                             (-> %
                                 (assoc-in [:axes 0 :properties :labels :text
@@ -93,12 +95,13 @@
                                 (assoc-in [:marks 1 :properties :enter :text]
                                           {:template "{{datum.frequency}}%"})
                                 (show-percent-sign-on-tooltip 2))
-                            %)]
+                            %)
+        chart-height (or height (* (count data) band-width))]
     (-> horizontal-bar-chart-spec-template
         (assoc-in [:data 0 :values] data)
-        (assoc-in [:height] (or height
-                                (* (count data) band-width)))
-        (assoc-in [:width] (or width
-                               (and (not responsive?)
-                                    default-chart-width)))
+        (assoc :height chart-height)
+        (assoc :width (or width
+                          (and (not responsive?)
+                               default-chart-width)))
+        (set-status-text status-text chart-height)
         count-or-percent)))
