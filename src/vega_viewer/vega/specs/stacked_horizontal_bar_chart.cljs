@@ -128,9 +128,8 @@
                                           "{{tooltipData.frequency}}%"}]})
                              (show-percent-sign-on-tooltip 1))
                             %)
-        category-count (when (or height status-text)
-                         (get-category-count data))
-        chart-height (or height (* category-count band-width))]
+        chart-height (or height (* (get-category-count data)
+                                   band-width))]
     (-> stacked-horizontal-bar-chart-spec-template
         (assoc-in [:data 0 :values] data)
         (assoc :height chart-height)
