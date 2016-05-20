@@ -135,13 +135,16 @@
                         (and (not responsive?)
                              default-chart-width))
         get-ranking #(get % "group-ranking")
-        legend-values (when (every? get-ranking data)
-                        (->> data
-                             (sort-by get-ranking)
-                             (map #(get % "group"))
-                             vec))]
+        set-legend-values (fn [spec]
+                            (if (every? get-ranking data)
+                              (->> data
+                                   (sort-by get-ranking)
+                                   (map #(get % "group"))
+                                   vec
+                                   (assoc-in spec
+                                             [:legends 0 :values]))
+                              spec))]
     (-> stacked-horizontal-bar-chart-spec-template
-        (assoc-in [:legends 0 :values] legend-values)
         (assoc-in [:data 0 :values] data)
         (assoc :height chart-height)
         (assoc :width chart-width)
@@ -150,5 +153,6 @@
                                        palette))
         (set-tooltip-bounds :visualization-height chart-height)
         (set-tooltip-bounds :visualization-width chart-width)
+        set-legend-values
         (set-status-text status-text chart-height)
         count-or-percent)))
