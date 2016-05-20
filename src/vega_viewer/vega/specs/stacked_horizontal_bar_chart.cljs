@@ -7,6 +7,7 @@
             [vega-viewer.vega.specs.utils
              :refer [get-tooltip-text-marks
                      set-status-text
+                     set-tooltip-bounds
                      show-percent-sign-on-tooltip]]))
 
 (def stacked-horizontal-bar-chart-spec-template
@@ -129,15 +130,19 @@
                              (show-percent-sign-on-tooltip 1))
                             %)
         chart-height (or height (* (get-category-count data)
-                                   band-width))]
+                                   band-width))
+        chart-width (or width
+                        (and (not responsive?)
+                             default-chart-width))
+        ]
     (-> stacked-horizontal-bar-chart-spec-template
         (assoc-in [:data 0 :values] data)
         (assoc :height chart-height)
-        (assoc :width (or width
-                          (and (not responsive?)
-                               default-chart-width)))
+        (assoc :width chart-width)
         (assoc-in [:scales 2 :range] (if (seq user-defined-palette)
                                        user-defined-palette
                                        palette))
+        (set-tooltip-bounds :visualization-height chart-height)
+        (set-tooltip-bounds :visualization-width chart-width)
         (set-status-text status-text chart-height)
         count-or-percent)))

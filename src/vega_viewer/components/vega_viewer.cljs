@@ -1,7 +1,8 @@
 (ns vega-viewer.components.vega-viewer
   (:require [cljsjs.vega]
             [om.core :as om :include-macros true]
-            [sablono.core :refer-macros [html]]))
+            [sablono.core :refer-macros [html]]
+            [vega-viewer.vega.specs.utils :refer [set-tooltip-bounds]]))
 
 (def chart-width-proportion 0.8)
 
@@ -19,15 +20,22 @@
                               (.-clientWidth container))))]
     (om/set-state! owner :resize-handler resize-handler)))
 
+(defn- update-width-and-tooltip-bounds
+  [spec width]
+  (-> spec
+      (assoc :width
+             (* width
+                chart-width-proportion))
+      (set-tooltip-bounds :visualization-width (* width
+                                                  chart-width-proportion))))
+
 (defn render-vega-visualization
   "Render a Vega specification in the supplied container"
   [spec container responsive?]
   (let [container-width (.-clientWidth container)
         spec-as-js (clj->js (if responsive?
-                              (assoc spec
-                                     :width
-                                     (* container-width
-                                        chart-width-proportion))
+                              (update-width-and-tooltip-bounds spec
+                                                               container-width)
                               spec))]
     (js/vg.parse.spec spec-as-js
                       (fn [chart]

@@ -7,6 +7,7 @@
             [vega-viewer.vega.specs.utils
              :refer [get-tooltip-text-marks
                      set-status-text
+                     set-tooltip-bounds
                      show-percent-sign-on-tooltip]]))
 
 (def horizontal-bar-chart-spec-template
@@ -96,12 +97,15 @@
                                           {:template "{{datum.frequency}}%"})
                                 (show-percent-sign-on-tooltip 2))
                             %)
-        chart-height (or height (* (count data) band-width))]
+        chart-height (or height (* (count data) band-width))
+        chart-width (or width
+                        (and (not responsive?)
+                             default-chart-width))]
     (-> horizontal-bar-chart-spec-template
         (assoc-in [:data 0 :values] data)
         (assoc :height chart-height)
-        (assoc :width (or width
-                          (and (not responsive?)
-                               default-chart-width)))
+        (assoc :width chart-width)
+        (set-tooltip-bounds :visualization-height chart-height)
+        (set-tooltip-bounds :visualization-width chart-width)
         (set-status-text status-text chart-height)
         count-or-percent)))
