@@ -52,7 +52,7 @@
             :from {:data "table"
                    :transform [{:type "stack"
                                 :groupby ["category"]
-                                :sortby ["group"]
+                                :sortby ["group-ranking", "group"]
                                 :field "frequency"}]}
             :properties {:enter {:y {:scale "y"
                                      :field "category"
@@ -134,8 +134,14 @@
         chart-width (or width
                         (and (not responsive?)
                              default-chart-width))
-        ]
+        get-ranking #(get % "group-ranking")
+        legend-values (when (every? get-ranking data)
+                        (->> data
+                             (sort-by get-ranking)
+                             (map #(get % "group"))
+                             vec))]
     (-> stacked-horizontal-bar-chart-spec-template
+        (assoc-in [:legends 0 :values] legend-values)
         (assoc-in [:data 0 :values] data)
         (assoc :height chart-height)
         (assoc :width chart-width)
