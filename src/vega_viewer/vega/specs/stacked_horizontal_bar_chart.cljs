@@ -7,6 +7,7 @@
             [vega-viewer.vega.specs.utils
              :refer [get-tooltip-text-marks
                      set-status-text
+                     set-tooltip-bounds
                      show-percent-sign-on-tooltip]]))
 
 (def stacked-horizontal-bar-chart-spec-template
@@ -51,7 +52,7 @@
             :from {:data "table"
                    :transform [{:type "stack"
                                 :groupby ["category"]
-                                :sortby ["group"]
+                                :sortby ["group-ranking", "group"]
                                 :field "frequency"}]}
             :properties {:enter {:y {:scale "y"
                                      :field "category"
@@ -129,15 +130,29 @@
                              (show-percent-sign-on-tooltip 1))
                             %)
         chart-height (or height (* (get-category-count data)
-                                   band-width))]
+                                   band-width))
+        chart-width (or width
+                        (and (not responsive?)
+                             default-chart-width))
+        get-ranking #(get % "group-ranking")
+        set-legend-values (fn [spec]
+                            (if (every? get-ranking data)
+                              (->> data
+                                   (sort-by get-ranking)
+                                   (map #(get % "group"))
+                                   vec
+                                   (assoc-in spec
+                                             [:legends 0 :values]))
+                              spec))]
     (-> stacked-horizontal-bar-chart-spec-template
         (assoc-in [:data 0 :values] data)
         (assoc :height chart-height)
-        (assoc :width (or width
-                          (and (not responsive?)
-                               default-chart-width)))
+        (assoc :width chart-width)
         (assoc-in [:scales 2 :range] (if (seq user-defined-palette)
                                        user-defined-palette
                                        palette))
+        (set-tooltip-bounds :visualization-height chart-height)
+        (set-tooltip-bounds :visualization-width chart-width)
+        set-legend-values
         (set-status-text status-text chart-height)
         count-or-percent)))

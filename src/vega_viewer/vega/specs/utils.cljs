@@ -1,6 +1,8 @@
 (ns vega-viewer.vega.specs.utils
-  (:require [vega-viewer.vega.specs.constants
-             :refer [band-width tooltip-height tooltip-stroke-color]]))
+  (:require [clojure.string :refer [join]]
+            [vega-viewer.vega.specs.constants
+             :refer [band-width tooltip-height tooltip-stroke-color
+                     tooltip-width]]))
 
 (defn get-tooltip-text-marks
   [label-field value-field]
@@ -66,3 +68,23 @@
             [:marks tooltip-mark-index :marks 1 :properties :update :text]
             {:rule [{:predicate {:name "isTooltipVisible?"}}
                     {:template "{{tooltipData.frequency}} %"}]}))
+
+(defn set-tooltip-bounds
+  [spec & {:keys [visualization-height visualization-width]}]
+  (let [signal-index (cond
+                       visualization-height 2
+                       visualization-width 1)
+        event-fn-literal (cond
+                           visualization-height "eventY()"
+                           visualization-width "eventX()")]
+    (assoc-in spec [:signals signal-index :streams 0 :expr]
+              (str "min("
+                   (when visualization-width
+                     (- visualization-width
+                        tooltip-width))
+                   (when visualization-height
+                     (- visualization-height
+                        tooltip-height))
+                   ","
+                   event-fn-literal
+                   ")"))))
