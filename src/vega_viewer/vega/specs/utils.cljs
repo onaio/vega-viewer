@@ -70,21 +70,24 @@
                     {:template "{{tooltipData.frequency}} %"}]}))
 
 (defn set-tooltip-bounds
-  [spec & {:keys [visualization-height visualization-width]}]
-  (let [signal-index (cond
-                       visualization-height 2
-                       visualization-width 1)
-        event-fn-literal (cond
-                           visualization-height "eventY()"
-                           visualization-width "eventX()")]
-    (assoc-in spec [:signals signal-index :streams 0 :expr]
-              (str "min("
-                   (when visualization-width
-                     (- visualization-width
-                        tooltip-width))
-                   (when visualization-height
-                     (- visualization-height
-                        tooltip-height))
-                   ","
-                   event-fn-literal
-                   ")"))))
+  [{:keys [signals] :as spec}
+   & {:keys [visualization-height visualization-width]}]
+  (if signals
+    (let [signal-index (cond
+                         visualization-height 2
+                         visualization-width 1)
+          event-fn-literal (cond
+                             visualization-height "eventY()"
+                             visualization-width "eventX()")]
+      (assoc-in spec [:signals signal-index :streams 0 :expr]
+                (str "min("
+                     (when visualization-width
+                       (- visualization-width
+                          tooltip-width))
+                     (when visualization-height
+                       (- visualization-height
+                          tooltip-height))
+                     ","
+                     event-fn-literal
+                     ")")))
+    spec))
