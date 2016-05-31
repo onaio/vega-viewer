@@ -1,6 +1,6 @@
 (ns vega-viewer.vega.specs.histogram
   (:require [vega-viewer.vega.specs.constants
-             :refer [bar-color default-bin-size default-chart-width
+             :refer [bar-color maximum-bin-count default-chart-width
                      default-histogram-tick-count histogram-height]]
             [vega-viewer.vega.specs.utils :refer [set-status-text]]))
 
@@ -9,7 +9,7 @@
            :values []
            :transform [{:type "bin"
                         :field "value"
-                        :maxbins default-bin-size
+                        :maxbins maximum-bin-count
                         :minstep 1}]}
           {:name "summary"
            :source "entries"
