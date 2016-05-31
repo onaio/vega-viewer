@@ -6,6 +6,7 @@
 (def y-offset 3)
 (def histogram-height 200)
 (def default-bin-size 15)
+(def default-histogram-tick-count 12)
 (def default-chart-width 600)
 (def bar-color "#24B3B5")
 

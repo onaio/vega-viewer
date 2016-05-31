@@ -1,7 +1,7 @@
 (ns vega-viewer.vega.specs.histogram
   (:require [vega-viewer.vega.specs.constants
              :refer [bar-color default-bin-size default-chart-width
-                     histogram-height]]
+                     default-histogram-tick-count histogram-height]]
             [vega-viewer.vega.specs.utils :refer [set-status-text]]))
 
 (def histogram-spec-template
@@ -24,7 +24,10 @@
              :type "linear"
              :domain {:data "summary" :field "count" :sort true}
              :range "height"}]
-   :axes [{:type "x" :scale "x" :ticks 10 :layer "back"}
+   :axes [{:type "x"
+           :scale "x"
+           :ticks default-histogram-tick-count
+           :layer "back"}
           {:type "y" :scale "y" :layer "back"}]
    :marks [{:type "rect"
             :properties {:enter
