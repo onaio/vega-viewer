@@ -45,13 +45,25 @@
                                  :text {:field "datum.count"}}}}]})
 
 (defn generate-histogram-chart-vega-spec
-  [{values :data :keys [height status-text width]} & {:keys [responsive?]}]
-  (-> histogram-spec-template
-      (assoc-in [:data 0 :values] (map (fn [value]
-                                         {"value" value})
-                                       values))
-      (assoc :height (or height histogram-height))
-      (assoc :width (or width
-                        (and (not responsive?)
-                             default-chart-width)))
-      (set-status-text status-text histogram-height)))
+  [{values :data :keys [height status-text width]}
+   & {:keys [responsive? abbreviate-x-axis-tick-labels?]}]
+  (let [abbreviate-x-axis-tick-labels
+        (fn [spec]
+          (if abbreviate-x-axis-tick-labels?
+            (assoc-in spec
+                      [:axes 0 :properties]
+                      {:labels
+                       {:text
+                        {:template
+                         "{{ datum.data | number:'.3s'}}"}}})
+            spec))]
+    (-> histogram-spec-template
+        abbreviate-x-axis-tick-labels
+        (assoc-in [:data 0 :values] (map (fn [value]
+                                           {"value" value})
+                                         values))
+        (assoc :height (or height histogram-height))
+        (assoc :width (or width
+                          (and (not responsive?)
+                               default-chart-width)))
+        (set-status-text status-text histogram-height))))

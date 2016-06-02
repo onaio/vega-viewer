@@ -6,9 +6,13 @@
              :refer [generate-histogram-chart-vega-spec]]))
 
 (defn histogram-chart
-  [cursor owner opts]
+  [cursor owner {:as opts
+                 :keys [abbreviate-x-axis-tick-labels?]}]
   (reify
     om/IRender
     (render [_]
-      (let [vega-spec (generate-histogram-chart-vega-spec cursor)]
+      (let [vega-spec
+            (generate-histogram-chart-vega-spec cursor
+                                                :abbreviate-x-axis-tick-labels?
+                                                abbreviate-x-axis-tick-labels?)]
         (html (om/build vega-viewer vega-spec {:opts opts}))))))
