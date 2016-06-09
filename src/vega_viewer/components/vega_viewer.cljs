@@ -53,7 +53,7 @@
 
     om/IDidUpdate
     (did-update [_ _ _]
-      (render-vega-visualization vega-spec
+      (render-vega-visualization @vega-spec
                                  (om/get-node owner "vega-container")
                                  responsive?))
 
