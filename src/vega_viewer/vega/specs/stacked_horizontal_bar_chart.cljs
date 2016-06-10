@@ -11,6 +11,11 @@
                      show-percent-sign-on-tooltip]]))
 
 (def inline-stack-label-color "#fff")
+(def inline-stack-label-y-offset
+  "This is based on the height of the bar to ensure proper alignment"
+  (-> bar-height
+      (* 0.5)
+      (+ 5)))
 
 (def stacked-horizontal-bar-chart-spec-template
   {:data [{:name "table"}
@@ -76,9 +81,7 @@
             :from {:data "grouped-data"}
             :properties {:enter {:y {:scale "y"
                                      :field "category"
-                                     :offset (-> bar-height
-                                                 (* 0.5)
-                                                 (+ 5))}
+                                     :offset inline-stack-label-y-offset}
                                  :x {:scale "x"
                                      :field "layout_mid"}
                                  :fill {:value inline-stack-label-color}
