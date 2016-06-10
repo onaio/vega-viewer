@@ -10,6 +10,8 @@
                      set-tooltip-bounds
                      show-percent-sign-on-tooltip]]))
 
+(def inline-stack-label-color "#fff")
+
 (def stacked-horizontal-bar-chart-spec-template
   {:data [{:name "table"}
           {:name "stats"
@@ -18,7 +20,13 @@
            [{:type "aggregate"
              :groupby ["category"]
              :summarize [{:field "frequency"
-                          :ops ["sum"]}]}]}]
+                          :ops ["sum"]}]}]}
+          {:name "grouped-data"
+           :source "table"
+           :transform [{:type "stack"
+                        :groupby ["category"]
+                        :sortby ["group-ranking", "group"]
+                        :field "frequency"}]}]
    :scales [{:name "y"
              :type "ordinal"
              :range "height"
@@ -49,11 +57,7 @@
                            :symbols {:shape {:value "square"}
                                      :stroke {:value "transparent"}}}}]
    :marks [{:type "rect"
-            :from {:data "table"
-                   :transform [{:type "stack"
-                                :groupby ["category"]
-                                :sortby ["group-ranking", "group"]
-                                :field "frequency"}]}
+            :from {:data "grouped-data"}
             :properties {:enter {:y {:scale "y"
                                      :field "category"
                                      :offset y-offset}
@@ -68,6 +72,17 @@
                                         :field "group"}}
                          :update {:fillOpacity {:value 1}}
                          :hover {:fillOpacity {:value 0.9}}}}
+           {:type "text"
+            :from {:data "grouped-data"}
+            :properties {:enter {:y {:scale "y"
+                                     :field "category"
+                                     :offset (-> bar-height
+                                                 (* 0.5)
+                                                 (+ 5))}
+                                 :x {:scale "x"
+                                     :field "layout_mid"}
+                                 :fill {:value inline-stack-label-color}
+                                 :text {:template "{{datum.frequency}}"}}}}
            {:type "group"
             :properties {:enter {:align {:value "center"}
                                  :fill {:value "#fff"}}
