@@ -79,7 +79,8 @@
                          :hover {:fillOpacity {:value 0.9}}}}
            {:type "text"
             :from {:data "grouped-data"}
-            :properties {:enter {:y {:scale "y"
+            :properties {:enter {:align {:value "center"}
+                                 :y {:scale "y"
                                      :field "category"
                                      :offset inline-stack-label-y-offset}
                                  :x {:scale "x"
