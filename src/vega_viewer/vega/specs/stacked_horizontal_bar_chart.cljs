@@ -77,16 +77,6 @@
                                         :field "group"}}
                          :update {:fillOpacity {:value 1}}
                          :hover {:fillOpacity {:value 0.9}}}}
-           {:type "text"
-            :from {:data "grouped-data"}
-            :properties {:enter {:align {:value "center"}
-                                 :y {:scale "y"
-                                     :field "category"
-                                     :offset inline-stack-label-y-offset}
-                                 :x {:scale "x"
-                                     :field "layout_mid"}
-                                 :fill {:value inline-stack-label-color}
-                                 :text {:template "{{datum.frequency}}"}}}}
            {:type "group"
             :properties {:enter {:align {:value "center"}
                                  :fill {:value "#fff"}}
@@ -107,7 +97,17 @@
                                    [{:predicate {:name "isTooltipVisible?"}
                                      :value 0}
                                     {:value 1}]}}}
-            :marks (get-tooltip-text-marks "group" "frequency")}]
+            :marks (get-tooltip-text-marks "group" "frequency")}
+           {:type "text"
+            :from {:data "grouped-data"}
+            :properties {:enter {:align {:value "center"}
+                                 :y {:scale "y"
+                                     :field "category"
+                                     :offset inline-stack-label-y-offset}
+                                 :x {:scale "x"
+                                     :field "layout_mid"}
+                                 :fill {:value inline-stack-label-color}
+                                 :text {:template "{{datum.frequency}}"}}}}]
    :signals [{:name "tooltipData"
               :init {}
               :streams [{:type "rect:mouseover" :expr "datum"}
@@ -135,10 +135,12 @@
   (let [count-or-percent #(if (= show-count-or-percent? :percent)
                             (->
                              %
-                             (assoc-in [:marks 0 :from :transform 0 :offset]
-                                       "normalize")
+                             (assoc-in [:data 2 :transform 0 :offset] "normalize")
                              (assoc-in [:scales 1 :domainMax] 1)
                              (assoc-in [:axes 1 :format] "%")
+                             (assoc-in
+                              [:marks 2 :properties :enter :text :template]
+                              "{{datum.frequency}}%")
                              (assoc-in [:marks 1 :marks 1 :properties
                                         :update :text]
                                        {:rule
