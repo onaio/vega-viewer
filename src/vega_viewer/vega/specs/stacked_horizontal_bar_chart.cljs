@@ -161,7 +161,7 @@
                               (->> data
                                    (sort-by get-ranking)
                                    (map #(get % "group"))
-                                   vec
+                                   set
                                    (assoc-in spec
                                              [:legends 0 :values]))
                               spec))]
