@@ -91,3 +91,18 @@
                      event-fn-literal
                      ")")))
     spec))
+
+(def x-axis-index 0)
+(def y-axis-index 1)
+
+(defn truncate-y-axis-labels
+  [spec maximum-text-length]
+  (if (pos? maximum-text-length)
+    (assoc-in spec
+              [:axes y-axis-index
+               :properties :labels
+               :text :template]
+              (str "{{datum.data | truncate:"
+                   maximum-text-length
+                   "}}"))
+    spec))
