@@ -8,7 +8,8 @@
              :refer [get-tooltip-text-marks
                      set-status-text
                      set-tooltip-bounds
-                     show-percent-sign-on-tooltip]]))
+                     show-percent-sign-on-tooltip
+                     truncate-y-axis-labels]]))
 
 (def horizontal-bar-chart-spec-template
   {:data [{:name "entries"
@@ -27,7 +28,9 @@
            :type "x"
            :layer "back"
            :properties {:labels {:text {:template "{{datum.data}}"}}}}
-          {:scale "category" :type "y" :layer "back"}]
+          {:scale "category"
+           :type "y"
+           :layer "back"}]
    :marks [{:name "bars"
             :from {:data "entries"}
             :type "rect"
@@ -87,7 +90,9 @@
                             {:arg "id"}]}]})
 
 (defn generate-horizontal-bar-chart-vega-spec
-  [{:keys [data height width show-count-or-percent? status-text]} & {:keys [responsive?]}]
+  [{:keys [data height width show-count-or-percent? status-text
+           maximum-y-axis-label-length]}
+   & {:keys [responsive?]}]
   (let [count-or-percent #(if (= show-count-or-percent? :percent)
                             (-> %
                                 (assoc-in [:axes 0 :properties :labels :text
@@ -108,4 +113,5 @@
         (set-tooltip-bounds :visualization-height chart-height)
         (set-tooltip-bounds :visualization-width chart-width)
         (set-status-text status-text chart-height)
+        (truncate-y-axis-labels maximum-y-axis-label-length)
         count-or-percent)))

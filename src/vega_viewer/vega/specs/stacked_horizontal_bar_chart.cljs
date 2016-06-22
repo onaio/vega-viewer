@@ -8,7 +8,8 @@
              :refer [get-tooltip-text-marks
                      set-status-text
                      set-tooltip-bounds
-                     show-percent-sign-on-tooltip]]))
+                     show-percent-sign-on-tooltip
+                     truncate-y-axis-labels]]))
 
 (def inline-stack-label-color "#fff")
 (def inline-stack-label-y-offset
@@ -49,11 +50,11 @@
              :domain {:data "table"
                       :field "group"
                       :sort true}}]
-   :axes [{:type "y"
-           :scale "y"
-           :layer "back"}
-          {:type "x"
+   :axes [{:type "x"
            :scale "x"
+           :layer "back"}
+          {:type "y"
+           :scale "y"
            :layer "back"}]
    :legends [{:fill "color"
               :properties {:labels
@@ -130,14 +131,15 @@
        (count)))
 
 (defn generate-stacked-horizontal-bar-chart-vega-spec
-  [{:keys [data height width show-count-or-percent? status-text]}
+  [{:keys [data height width show-count-or-percent? status-text
+           maximum-y-axis-label-length]}
    & {:keys [responsive? user-defined-palette]}]
   (let [count-or-percent #(if (= show-count-or-percent? :percent)
                             (->
                              %
                              (assoc-in [:data 2 :transform 0 :offset] "normalize")
                              (assoc-in [:scales 1 :domainMax] 1)
-                             (assoc-in [:axes 1 :format] "%")
+                             (assoc-in [:axes 0 :format] "%")
                              (assoc-in
                               [:marks 2 :properties :enter :text :template]
                               "{{datum.frequency}}%")
@@ -176,4 +178,5 @@
         (set-tooltip-bounds :visualization-width chart-width)
         set-legend-values
         (set-status-text status-text chart-height)
+        (truncate-y-axis-labels maximum-y-axis-label-length)
         count-or-percent)))
