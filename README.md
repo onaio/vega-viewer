@@ -47,6 +47,7 @@ Run `lein-figwheel` in the project root to explore the included devcard
 
 ## Contributors
 
+* [Mark Ekisa](https://github.com/ivermac)
 * [Okal Otieno](https://github.com/okal)
 * [Roy Rutto](https://github.com/royrutto)
 
