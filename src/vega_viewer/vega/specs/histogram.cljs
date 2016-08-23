@@ -1,7 +1,7 @@
 (ns vega-viewer.vega.specs.histogram
   (:require [vega-viewer.vega.specs.constants
              :refer [bar-color maximum-bin-count default-chart-width
-                     default-histogram-tick-count histogram-height]]
+                     default-histogram-tick-count histogram-height max-height]]
             [vega-viewer.vega.specs.utils :refer [set-status-text]]))
 
 (def histogram-spec-template
@@ -50,7 +50,8 @@
 (defn generate-histogram-chart-vega-spec
   [{values :data :keys [height status-text width]}
    & {:keys [responsive? abbreviate-x-axis-tick-labels?]}]
-  (let [abbreviate-x-axis-tick-labels
+  (let [height (min (or height histogram-height) max-height)
+        abbreviate-x-axis-tick-labels
         (fn [spec]
           (if abbreviate-x-axis-tick-labels?
             (assoc-in spec
@@ -65,7 +66,7 @@
         (assoc-in [:data 0 :values] (map (fn [value]
                                            {"value" value})
                                          values))
-        (assoc :height (or height histogram-height))
+        (assoc :height height)
         (assoc :width (or width
                           (and (not responsive?)
                                default-chart-width)))
