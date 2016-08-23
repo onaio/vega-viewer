@@ -153,7 +153,7 @@
                              (show-percent-sign-on-tooltip 1))
                             %)
         chart-height (min (or height (* (get-category-count data)
-                                   band-width))
+                                        band-width))
                           max-height)
         chart-width (or width
                         (and (not responsive?)
