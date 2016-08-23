@@ -9,6 +9,7 @@
 (def default-histogram-tick-count 12)
 (def default-chart-width 600)
 (def bar-color "#24B3B5")
+(def max-height 16000)
 
 (def palette ["#24B3B5"
               "#F05C3E"

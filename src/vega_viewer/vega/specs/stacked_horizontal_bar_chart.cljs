@@ -3,7 +3,7 @@
              :refer [band-width bar-height bar-height-offset
                      default-chart-width palette tooltip-height
                      tooltip-offset tooltip-opacity tooltip-stroke-color
-                     tooltip-width y-offset]]
+                     tooltip-width y-offset max-height]]
             [vega-viewer.vega.specs.utils
              :refer [get-tooltip-text-marks
                      set-status-text
@@ -152,8 +152,9 @@
                                           "{{tooltipData.frequency}}%"}]})
                              (show-percent-sign-on-tooltip 1))
                             %)
-        chart-height (or height (* (get-category-count data)
+        chart-height (min (or height (* (get-category-count data)
                                    band-width))
+                          max-height)
         chart-width (or width
                         (and (not responsive?)
                              default-chart-width))
