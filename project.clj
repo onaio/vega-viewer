@@ -18,7 +18,6 @@
             [lein-kibit "0.1.2"]]
   :clean-targets ^{:protect false} ["resources/public/js/compiled"
                                     "target"]
-  :hooks [leiningen.cljsbuild]
   :source-paths ["src"]
   :cljsbuild {:builds [{:id "devcards"
                         :source-paths ["src"]
