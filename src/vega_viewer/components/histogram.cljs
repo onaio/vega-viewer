@@ -7,12 +7,14 @@
 
 (defn histogram-chart
   [cursor owner {:as opts
-                 :keys [abbreviate-x-axis-tick-labels?]}]
+                 :keys [abbreviate-x-axis-tick-labels? x-axis-title y-axis-title]}]
   (reify
     om/IRender
     (render [_]
       (let [vega-spec
             (generate-histogram-chart-vega-spec cursor
                                                 :abbreviate-x-axis-tick-labels?
-                                                abbreviate-x-axis-tick-labels?)]
+                                                abbreviate-x-axis-tick-labels?
+                                                :x-axis-title x-axis-title
+                                                :y-axis-title y-axis-title)]
         (html (om/build vega-viewer vega-spec {:opts opts}))))))

@@ -27,8 +27,12 @@
    :axes [{:type "x"
            :scale "x"
            :ticks default-histogram-tick-count
-           :layer "back"}
-          {:type "y" :scale "y" :layer "back"}]
+           :layer "back"
+           :title nil}
+          {:type "y"
+           :scale "y"
+           :layer "back"
+           :title nil}]
    :marks [{:type "rect"
             :properties {:enter
                          {:x {:scale "x" :field "bin_start" :offset 1}
@@ -49,7 +53,8 @@
 
 (defn generate-histogram-chart-vega-spec
   [{values :data :keys [height status-text width]}
-   & {:keys [responsive? abbreviate-x-axis-tick-labels?]}]
+   & {:keys [responsive? abbreviate-x-axis-tick-labels?
+             x-axis-title y-axis-title]}]
   (let [height (min (or height histogram-height) max-height)
         abbreviate-x-axis-tick-labels
         (fn [spec]
@@ -66,6 +71,8 @@
         (assoc-in [:data 0 :values] (map (fn [value]
                                            {"value" value})
                                          values))
+        (assoc-in [:axes 0 :title] x-axis-title)
+        (assoc-in [:axes 1 :title] y-axis-title)
         (assoc :height height)
         (assoc :width (or width
                           (and (not responsive?)
