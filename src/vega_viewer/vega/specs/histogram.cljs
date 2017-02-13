@@ -54,7 +54,7 @@
 (defn generate-histogram-chart-vega-spec
   [{values :data :keys [height status-text width]}
    & {:keys [responsive? abbreviate-x-axis-tick-labels?
-             x-axis-title y-axis-title]}]
+             x-axis-title y-axis-title custom-duration-chart?]}]
   (let [height (min (or height histogram-height) max-height)
         abbreviate-x-axis-tick-labels
         (fn [spec]
@@ -65,9 +65,19 @@
                        {:text
                         {:template
                          "{{ datum.data | number:'.3s'}}"}}})
-            spec))]
+            spec))
+        duration-chart (fn [spec]
+                         (if custom-duration-chart?
+                           (assoc-in spec
+                                     [:axes 0 :properties]
+                                     {:labels
+                                      {:text
+                                       {:template
+                                        "{{ datum.data | time:'%H:%M:%S'}}"}}})
+                           spec))]
     (-> histogram-spec-template
         abbreviate-x-axis-tick-labels
+        duration-chart
         (assoc-in [:data 0 :values] (map (fn [value]
                                            {"value" value})
                                          values))

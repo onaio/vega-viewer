@@ -7,7 +7,8 @@
 
 (defn histogram-chart
   [cursor owner {:as opts
-                 :keys [abbreviate-x-axis-tick-labels? x-axis-title y-axis-title]}]
+                 :keys [abbreviate-x-axis-tick-labels? x-axis-title y-axis-title
+                        custom-duration-chart?]}]
   (reify
     om/IRender
     (render [_]
@@ -16,5 +17,6 @@
                                                 :abbreviate-x-axis-tick-labels?
                                                 abbreviate-x-axis-tick-labels?
                                                 :x-axis-title x-axis-title
-                                                :y-axis-title y-axis-title)]
+                                                :y-axis-title y-axis-title
+                                                :custom-duration-chart? custom-duration-chart?)]
         (html (om/build vega-viewer vega-spec {:opts opts}))))))

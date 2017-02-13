@@ -137,7 +137,8 @@
   (let [count-or-percent #(if (= show-count-or-percent? :percent)
                             (->
                              %
-                             (assoc-in [:data 2 :transform 0 :offset] "normalize")
+                             (assoc-in [:data 2 :transform 0 :offset]
+                                       "normalize")
                              (assoc-in [:scales 1 :domainMax] 1)
                              (assoc-in [:axes 0 :format] "%")
                              (assoc-in
