@@ -73,7 +73,7 @@
                                      {:labels
                                       {:text
                                        {:template
-                                        "{{ datum.data | time:'%H:%M:%S'}}"}}})
+                                        "{{ datum.data | time:'%H:%M'}}"}}})
                            spec))]
     (-> histogram-spec-template
         abbreviate-x-axis-tick-labels
