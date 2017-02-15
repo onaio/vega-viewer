@@ -92,7 +92,7 @@
 (defn generate-horizontal-bar-chart-vega-spec
   [{:keys [data height width show-count-or-percent? status-text
            maximum-y-axis-label-length]}
-   & {:keys [responsive?]}]
+   & {:keys [responsive? custom-duration-chart?]}]
   (let [count-or-percent #(if (= show-count-or-percent? :percent)
                             (-> %
                                 (assoc-in [:axes 0 :properties :labels :text
@@ -105,8 +105,18 @@
         chart-height (min (or height (* (count data) band-width)) max-height)
         chart-width (or width
                         (and (not responsive?)
-                             default-chart-width))]
+                             default-chart-width))
+        duration-chart (fn [spec]
+                         (if custom-duration-chart?
+                           (assoc-in spec
+                                     [:axes 0 :properties]
+                                     {:labels
+                                      {:text
+                                       {:template
+                                        "{{ datum.data | time:'%H:%M'}}"}}})
+                           spec))]
     (-> horizontal-bar-chart-spec-template
+        duration-chart
         (assoc-in [:data 0 :values] data)
         (assoc :height chart-height)
         (assoc :width chart-width)
