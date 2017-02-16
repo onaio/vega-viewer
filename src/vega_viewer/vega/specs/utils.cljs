@@ -106,3 +106,18 @@
                    maximum-text-length
                    "}}"))
     spec))
+
+(defn update-x-axis-tick-labels
+  [spec x-axis-tick-label-format]
+  (cond-> spec
+    x-axis-tick-label-format
+    (assoc-in [:axes 0 :properties]
+              {:labels
+               {:text
+                {:template
+                 (str
+                  "{{ datum.data | "
+                  (condp = x-axis-tick-label-format
+                    :abbreviate-numbers "number:'.3s'"
+                    :time-based "time:'%H:%M'")
+                  "}}")}}})))

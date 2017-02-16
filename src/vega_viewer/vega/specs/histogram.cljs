@@ -1,8 +1,13 @@
 (ns vega-viewer.vega.specs.histogram
   (:require [vega-viewer.vega.specs.constants
-             :refer [bar-color maximum-bin-count default-chart-width
-                     default-histogram-tick-count histogram-height max-height]]
-            [vega-viewer.vega.specs.utils :refer [set-status-text]]))
+             :refer [bar-color
+                     default-chart-width
+                     default-histogram-tick-count
+                     histogram-height
+                     maximum-bin-count
+                     max-height]]
+            [vega-viewer.vega.specs.utils :refer [set-status-text
+                                                  x-axis-tick-label-format]]))
 
 (def histogram-spec-template
   {:data [{:name "entries"
@@ -57,24 +62,9 @@
              x-axis-tick-label-format
              x-axis-title
              y-axis-title]}]
-  (let [height (min (or height histogram-height) max-height)
-        x-axis-tick-label-format
-        (fn [spec]
-          (cond-> spec
-            x-axis-tick-label-format
-            (assoc-in spec
-                      [:axes 0 :properties]
-                      {:labels
-                       {:text
-                        {:template
-                         (str
-                          "{{ datum.data | "
-                          (condp = x-axis-tick-label-format
-                            :abbreviate-numbers "number:'.3s'"
-                            :time-based "time:'%H:%M'")
-                          "}}")}}})))]
+  (let [height (min (or height histogram-height) max-height)]
     (-> histogram-spec-template
-        x-axis-tick-label-format
+        (update-x-axis-tick-labels x-axis-tick-label-format)
         (assoc-in [:data 0 :values] (map (fn [value] {"value" value}) values))
         (assoc-in [:axes 0 :title] x-axis-title)
         (assoc-in [:axes 1 :title] y-axis-title)

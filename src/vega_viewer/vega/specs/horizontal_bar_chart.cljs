@@ -1,14 +1,22 @@
 (ns vega-viewer.vega.specs.horizontal-bar-chart
   (:require [vega-viewer.vega.specs.constants
-             :refer [band-width bar-color bar-height bar-height-offset
-                     default-chart-width tooltip-height tooltip-width
-                     tooltip-offset tooltip-opacity tooltip-stroke-color
+             :refer [band-width
+                     bar-color
+                     bar-height
+                     bar-height-offset
+                     default-chart-width
+                     tooltip-height
+                     tooltip-width
+                     tooltip-offset
+                     tooltip-opacity
+                     tooltip-stroke-color
                      y-offset max-height]]
             [vega-viewer.vega.specs.utils
              :refer [get-tooltip-text-marks
                      set-status-text
                      set-tooltip-bounds
                      show-percent-sign-on-tooltip
+                     update-x-axis-tick-labels
                      truncate-y-axis-labels]]))
 
 (def horizontal-bar-chart-spec-template
@@ -92,7 +100,7 @@
 (defn generate-horizontal-bar-chart-vega-spec
   [{:keys [data height width show-count-or-percent? status-text
            maximum-y-axis-label-length]}
-   & {:keys [responsive? custom-duration-chart?]}]
+   & {:keys [responsive? x-axis-tick-label-format]}]
   (let [count-or-percent #(if (= show-count-or-percent? :percent)
                             (-> %
                                 (assoc-in [:axes 0 :properties :labels :text
@@ -105,18 +113,9 @@
         chart-height (min (or height (* (count data) band-width)) max-height)
         chart-width (or width
                         (and (not responsive?)
-                             default-chart-width))
-        duration-chart (fn [spec]
-                         (if custom-duration-chart?
-                           (assoc-in spec
-                                     [:axes 0 :properties]
-                                     {:labels
-                                      {:text
-                                       {:template
-                                        "{{ datum.data | time:'%H:%M'}}"}}})
-                           spec))]
+                             default-chart-width))]
     (-> horizontal-bar-chart-spec-template
-        duration-chart
+        (update-x-axis-tick-labels x-axis-tick-label-format)
         (assoc-in [:data 0 :values] data)
         (assoc :height chart-height)
         (assoc :width chart-width)
