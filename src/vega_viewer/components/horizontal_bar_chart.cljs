@@ -14,11 +14,12 @@
    `height` is an integer representing the height of the generated chart
    `width` is an integer representing the height of the generated chart"
   [cursor owner {:as opts
-                 :keys [custom-duration-chart?]}]
+                 :keys [x-axis-tick-label-format]}]
   (reify
     om/IRender
     (render [_]
-      (let [vega-spec (generate-horizontal-bar-chart-vega-spec cursor
-                                                               :custom-duration-chart?
-                                                               custom-duration-chart?)]
+      (let [vega-spec (generate-horizontal-bar-chart-vega-spec
+                       cursor
+                       :x-axis-tick-label-format
+                       x-axis-tick-label-format)]
         (html (om/build vega-viewer vega-spec {:opts opts}))))))

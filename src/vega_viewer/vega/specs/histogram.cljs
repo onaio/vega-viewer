@@ -7,7 +7,7 @@
                      maximum-bin-count
                      max-height]]
             [vega-viewer.vega.specs.utils :refer [set-status-text
-                                                  x-axis-tick-label-format]]))
+                                                  update-x-axis-tick-labels]]))
 
 (def histogram-spec-template
   {:data [{:name "entries"
