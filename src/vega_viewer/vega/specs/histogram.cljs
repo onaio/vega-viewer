@@ -53,34 +53,29 @@
 
 (defn generate-histogram-chart-vega-spec
   [{values :data :keys [height status-text width]}
-   & {:keys [responsive? abbreviate-x-axis-tick-labels?
-             x-axis-title y-axis-title custom-duration-chart?]}]
+   & {:keys [responsive?
+             x-axis-tick-label-format
+             x-axis-title
+             y-axis-title]}]
   (let [height (min (or height histogram-height) max-height)
-        abbreviate-x-axis-tick-labels
+        x-axis-tick-label-format
         (fn [spec]
-          (if abbreviate-x-axis-tick-labels?
+          (cond-> spec
+            x-axis-tick-label-format
             (assoc-in spec
                       [:axes 0 :properties]
                       {:labels
                        {:text
                         {:template
-                         "{{ datum.data | number:'.3s'}}"}}})
-            spec))
-        duration-chart (fn [spec]
-                         (if custom-duration-chart?
-                           (assoc-in spec
-                                     [:axes 0 :properties]
-                                     {:labels
-                                      {:text
-                                       {:template
-                                        "{{ datum.data | time:'%H:%M'}}"}}})
-                           spec))]
+                         (str
+                          "{{ datum.data | "
+                          (condp = x-axis-tick-label-format
+                            :abbreviate-numbers "number:'.3s'"
+                            :time-based "time:'%H:%M'")
+                          "}}")}}})))]
     (-> histogram-spec-template
-        abbreviate-x-axis-tick-labels
-        duration-chart
-        (assoc-in [:data 0 :values] (map (fn [value]
-                                           {"value" value})
-                                         values))
+        x-axis-tick-label-format
+        (assoc-in [:data 0 :values] (map (fn [value] {"value" value}) values))
         (assoc-in [:axes 0 :title] x-axis-title)
         (assoc-in [:axes 1 :title] y-axis-title)
         (assoc :height height)

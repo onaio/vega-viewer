@@ -4,5 +4,6 @@ resources/public/js
 target
 *.iml
 *.xml
+.#*
 .name
 .cljs_rhino_repl/
