@@ -9,7 +9,8 @@
   [cursor owner {:as opts
                  :keys [x-axis-tick-label-format
                         x-axis-title
-                        y-axis-title]}]
+                        y-axis-title
+                        duration-chart-tooltips]}]
   (reify
     om/IRender
     (render [_]
@@ -18,5 +19,7 @@
                                                 :x-axis-tick-label-format
                                                 x-axis-tick-label-format
                                                 :x-axis-title x-axis-title
-                                                :y-axis-title y-axis-title)]
+                                                :y-axis-title y-axis-title
+                                                :duration-chart-tooltips
+                                                duration-chart-tooltips)]
         (html (om/build vega-viewer vega-spec {:opts opts}))))))

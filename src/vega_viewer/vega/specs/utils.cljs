@@ -2,7 +2,7 @@
   (:require [clojure.string :refer [join]]
             [vega-viewer.vega.specs.constants
              :refer [band-width tooltip-height tooltip-stroke-color
-                     tooltip-width]]))
+                     tooltip-width tooltip-offset tooltip-opacity]]))
 
 (defn get-tooltip-text-marks
   [label-field value-field]
@@ -119,5 +119,35 @@
                   "{{ datum.data | "
                   (condp = x-axis-tick-label-format
                     :abbreviate-numbers "number:'.3s'"
-                    :time-based "time:'%H:%M'")
+                    :time-based "number: '.3s'")
                   "}}")}}})))
+
+(defn custom-chart-tooltips
+  [spec duration-chart-tooltips]
+  (update spec
+          :marks
+          (fn [marks]
+            (if duration-chart-tooltips
+              (conj marks {:type "group"
+                           :properties
+                           {:enter {:align {:value "center"}
+                                    :fill {:value "#fff"}}
+                            :update {:y      {:signal "tooltipY"
+                                              :offset tooltip-offset}
+                                     :x      {:signal "tooltipX"
+                                              :offset tooltip-offset}
+                                     :height {:rule [{:predicate
+                                                      {:name
+                                                       "isTooltipVisible?"}
+                                                      :value 0}
+                                                     {:value tooltip-height}]}
+                                     :width       {:value tooltip-width}
+                                     :fillOpacity {:value tooltip-opacity}
+                                     :stroke      {:value tooltip-stroke-color}
+                                     :strokeWidth
+                                     {:rule
+                                      [{:predicate {:name "isTooltipVisible?"}
+                                        :value 0}
+                                       {:value 1}]}}}
+                           :marks (get-tooltip-text-marks "count" "bin_end")})
+              marks))))

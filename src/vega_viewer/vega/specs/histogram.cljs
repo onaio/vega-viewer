@@ -1,13 +1,23 @@
 (ns vega-viewer.vega.specs.histogram
   (:require [vega-viewer.vega.specs.constants
              :refer [bar-color
+                     band-width
                      default-chart-width
                      default-histogram-tick-count
                      histogram-height
                      maximum-bin-count
-                     max-height]]
+                     max-height
+                     tooltip-height
+                     tooltip-width
+                     tooltip-offset
+                     tooltip-opacity
+                     tooltip-stroke-color
+                     y-offset]]
             [vega-viewer.vega.specs.utils :refer [set-status-text
-                                                  update-x-axis-tick-labels]]))
+                                                  update-x-axis-tick-labels
+                                                  get-tooltip-text-marks
+                                                  set-tooltip-bounds
+                                                  custom-chart-tooltips]]))
 
 (def histogram-spec-template
   {:data [{:name "entries"
@@ -52,18 +62,39 @@
                                  :dx    {:field "width" :mult 0.5}
                                  :dy    {:value -7}
                                  :fill  {:value "black"}
-                                 :text  {:field "datum.count"}}}}]})
+                                 :text  {:field "datum.count"}}}}]
+   :signals [{:name "tooltipData"
+              :init {}
+              :streams [{:type "rect:mouseover" :expr "datum"}
+                        {:type "rect:mouseout" :expr "{}"}]}
+             {:name "tooltipX"
+              :init {}
+              :streams [{:type "mousemove" :expr "eventX()"}]}
+             {:name "tooltipY"
+              :init {}
+              :streams [{:type "mousemove" :expr "eventY()"}]}]
+   :predicates [{:name "isTooltipVisible?"
+                 :type "==",
+                 :operands [{:signal "tooltipData._id"}
+                            {:arg "id"}]}]})
 
 (defn generate-histogram-chart-vega-spec
   [{values :data :keys [height status-text width]}
    & {:keys [responsive?
              x-axis-tick-label-format
              x-axis-title
-             y-axis-title]}]
-  (let [height (min (or height histogram-height) max-height)]
+             y-axis-title
+             duration-chart-tooltips]}]
+  (let [height (min (or height histogram-height) max-height)
+        chart-height (min (or height (* (count :data) band-width)) max-height)
+        chart-width (or width
+                        (and (not responsive?)
+                             default-chart-width))]
     (cond-> histogram-spec-template
       x-axis-tick-label-format
       (update-x-axis-tick-labels x-axis-tick-label-format)
+      duration-chart-tooltips
+      (custom-chart-tooltips duration-chart-tooltips)
       true (assoc-in [:data 0 :values]
                      (map (fn [value] {"value" value}) values))
       x-axis-title (assoc-in [:axes 0 :title] x-axis-title)
@@ -72,4 +103,6 @@
       true (assoc :width (or width
                              (and (not responsive?)
                                   default-chart-width)))
+      (set-tooltip-bounds :visualization-height chart-height)
+      (set-tooltip-bounds :visualization-width chart-width)
       status-text (set-status-text status-text histogram-height))))
