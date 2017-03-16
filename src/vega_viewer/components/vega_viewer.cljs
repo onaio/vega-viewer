@@ -44,7 +44,7 @@
 
 (defn vega-viewer
   "Return an Om component that renders a Vega specification"
-  [{:keys [width] :as vega-spec} owner {:keys [responsive?]}]
+  [vega-spec owner {:keys [responsive?]}]
   (reify
     om/IWillUnmount
     (will-unmount [_]

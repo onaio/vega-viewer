@@ -13,7 +13,13 @@
 
 (def grouped-bar-chart-spec-template
   {:data [{:name "source"
-           :values []}
+           :values []
+           :transform [
+                         {
+                          :type "formula",
+                          :field "gender",
+                          :expr "datum.sex == 2 ? \"Female\" : \"Male\""
+                          }]}
           {:name "summary"
            :source "source"
            :transform [{:type "aggregate"
@@ -32,14 +38,17 @@
                                     {:field "gender"
                                      :ops ["distinct"]}]}
                        {:type "formula"
-                        :field "child_width"}
+                        :field "child_width"
+                        :expr "(datum[\"distinct_gender\"] + 1) * 6"}
                        {:type "formula"
-                        :field "width"}
+                        :field "width"
+                        :expr "(datum[\"child_width\"] + 4) * datum[\"distinct_age\"]"}
                        {:type "formula"
                         :field "child_height"
-                        :expr 200}
+                        :expr "200"}
                        {:type "formula"
-                        :field "height"}]}]
+                        :field "height"
+                        :expr "datum[\"child_height\"] + 16"}]}]
    :marks [{:name "root"
             :type "group"
             :from {:data "layout"}
@@ -51,16 +60,17 @@
                                            :height {:field {:parent "child_height"}}
                                            :y {:value 8}}}
                      :axes [{:type "y"
-                             :scale "x"
+                             :scale "y"
                              :format "s"
                              :grid false
-                             :title "population"}]}
+                             :title "Number of people"}]}
                     {:name "cell"
                      :type "group"
                      :from {:data "summary"
-                            :transform {:type "facet"
-                                        :groupby ["age"]}}
+                            :transform [{:type "facet"
+                                        :groupby ["age"]}]}
                      :properties {:update {:x {:scale "column"
+                                               :field "age"
                                                :offset 2}
                                            :y {:value 8}
                                            :width {:field {:parent "child_width"}}
@@ -70,17 +80,19 @@
                      :marks [{:name "child_marks"
                               :type "rect"
                               :from {:transform [{:type "stack"
-                                                  :groupby ["category"]
-                                                  :field "category"
-                                                  :sortby ["group-ranking", "group"]
+                                                  :groupby ["gender"]
+                                                  :field "sum_people"
+                                                  :sortby ["-gender"]
+                                                  :output {:start "sum_people_start"
+                                                           :end "sum_people_end"}
                                                   :offset "zero"}]}
                               :properties {:update {:xc {:scale "x"
                                                          :field "gender"}
                                                     :width {:value 5}
                                                     :y {:scale "y"
-                                                        :field "sum_start"}
+                                                        :field "sum_people_start"}
                                                     :y2 {:scale "y"
-                                                         :field "sum_end"}
+                                                         :field "sum_people_end"}
                                                     :fill {:scale "color"
                                                            :field "gender"}}}}]}]
             :scales [{:name "column"
