@@ -13,37 +13,31 @@
 
 (def grouped-bar-chart-spec-template
   {:data [{:name "source"
-           :values []
-           :transform [{:type "formula",
-                        :field "gender",
-                        :expr "datum.sex[0]"}
-                       {:type "formula",
-                        :field "people",
-                        :expr "datum.mean"}]}
+           :values []}
           {:name "summary"
            :source "source"
            :transform [{:type "aggregate"
-                        :groupby ["gender", "age"]
-                        :summarize {:people ["sum"]}}]}
+                        :groupby ["z", "x"]
+                        :summarize {:y ["sum"]}}]}
           {:name "stacked_scale"
            :source "summary"
            :transform [{:type "aggregate"
-                        :summarize [{:ops ["sum"], :field "sum_people"}]
-                        :groupby ["gender", "age"]}]}
+                        :summarize [{:ops ["sum"], :field "sum_y"}]
+                        :groupby ["z", "x"]}]}
           {:name "layout"
            :source "summary"
            :transform [{:type "aggregate"
-                        :summarize [{:field "age"
+                        :summarize [{:field "x"
                                      :ops ["distinct"]}
-                                    {:field "gender"
+                                    {:field "z"
                                      :ops ["distinct"]}]}
                        {:type "formula"
                         :field "child_width"
-                        :expr "(datum[\"distinct_gender\"] + 1) * 6"}
+                        :expr "(datum[\"distinct_z\"] + 1) * 6"}
                        {:type "formula"
                         :field "width"
                         :expr "(datum[\"child_width\"] + 25) *
-                        datum[\"distinct_age\"]"}
+                        datum[\"distinct_x\"]"}
                        {:type "formula"
                         :field "child_height"
                         :expr "200"}
@@ -53,60 +47,64 @@
    :marks [{:name "root"
             :type "group"
             :from {:data "layout"}
-            :properties {:update {:width {:field "width"}
-                                  :height {:field "height"}}}
+            :properties
+            {:update {:width {:field "width"}
+                      :height {:field "height"}}}
             :marks [{:name "y-axes"
                      :type "group"
-                     :properties {:update {:width {:field {:group "width"}}
-                                           :height {:field {:parent "child_height"}}
-                                           :y {:value 8}}}
+                     :properties
+                     {:update
+                      {:width {:field {:group "width"}}
+                       :height {:field {:parent "child_height"}}
+                       :y {:value 8}}}
                      :axes [{:type "y"
                              :scale "y"
                              :format "s"
-                             :grid false
-                             :title "Number of people"}]}
+                             :grid false}]}
                     {:name "cell"
                      :type "group"
                      :from {:data "summary"
                             :transform [{:type "facet"
-                                         :groupby ["age"]}]}
-                     :properties {:update {:x {:scale "column"
-                                               :field "age"
-                                               :offset 5}
-                                           :y {:value 8}
-                                           :width {:field {:parent "child_width"}}
-                                           :height {:field {:parent "child_height"}}
-                                           :stroke {:value "#CCC"}
-                                           :strokeWidth {:value 0}}}
+                                         :groupby ["x"]}]}
+                     :properties
+                     {:update
+                      {:x {:scale "column"
+                           :field "x"
+                           :offset 5}
+                       :y {:value 8}
+                       :width {:field {:parent "child_width"}}
+                       :height {:field {:parent "child_height"}}
+                       :stroke {:value "#CCC"}
+                       :strokeWidth {:value 0}}}
                      :marks [{:name "child_marks"
                               :type "rect"
                               :from {:transform [{:type "stack"
-                                                  :groupby ["gender"]
-                                                  :field "sum_people"
-                                                  :sortby ["-gender"]
-                                                  :output {:start "sum_people_start"
-                                                           :end "sum_people_end"}
+                                                  :groupby ["z"]
+                                                  :field "sum_y"
+                                                  :sortby ["-z"]
+                                                  :output {:start "sum_y_start"
+                                                           :end "sum_y_end"}
                                                   :offset "zero"}]}
                               :properties {:update {:xc {:scale "x"
-                                                         :field "gender"}
+                                                         :field "z"}
                                                     :width {:value 15}
                                                     :y {:scale "y"
-                                                        :field "sum_people_start"}
+                                                        :field "sum_y_start"}
                                                     :y2 {:scale "y"
-                                                         :field "sum_people_end"}
+                                                         :field "sum_y_end"}
                                                     :fill {:scale "color"
-                                                           :field "gender"}}}}]}]
+                                                           :field "z"}}}}]}]
             :scales [{:name "column"
                       :type "ordinal"
                       :domain {:data "summary"
-                               :field "age"
+                               :field "x"
                                :sort "ascending"}
                       :range "width"
                       :round true}
                      {:name "x"
                       :type "ordinal"
                       :domain {:data "summary"
-                               :field "gender"
+                               :field "z"
                                :sort true}
                       :bandSize 12
                       :round true
@@ -115,7 +113,7 @@
                      {:name "y"
                       :type "linear"
                       :domain {:data "stacked_scale"
-                               :field "sum_sum_people"}
+                               :field "sum_sum_y"}
                       :rangeMin 200
                       :rangeMax 0
                       :round true
@@ -124,7 +122,7 @@
                      {:name "color"
                       :type "ordinal"
                       :domain {:data "summary"
-                               :field "gender"
+                               :field "z"
                                :sort true}
                       :range ["#EA98D2", "#659CCA"]}]
             :axes [{:type "x"
@@ -132,10 +130,8 @@
                     :offset -8
                     :orient "bottom"
                     :tickSize 5
-                    :title "age"
                     :properties {:axis {:strokeWidth {:value 1}}}}]
             :legends [{:fill "color"
-                       :title "gender"
                        :properties {:symbols {:shape {:value "circle"}
                                               :strokeWidth {:value 0}}}}]}]})
 
