@@ -14,12 +14,12 @@
 (def grouped-bar-chart-spec-template
   {:data [{:name "source"
            :values []
-           :transform [
-                         {
-                          :type "formula",
-                          :field "gender",
-                          :expr "datum.sex == 2 ? \"Female\" : \"Male\""
-                          }]}
+           :transform [{:type "formula",
+                        :field "gender",
+                        :expr "datum.sex[0]"}
+                       {:type "formula",
+                        :field "people",
+                        :expr "datum.mean"}]}
           {:name "summary"
            :source "source"
            :transform [{:type "aggregate"
@@ -42,7 +42,8 @@
                         :expr "(datum[\"distinct_gender\"] + 1) * 6"}
                        {:type "formula"
                         :field "width"
-                        :expr "(datum[\"child_width\"] + 4) * datum[\"distinct_age\"]"}
+                        :expr "(datum[\"child_width\"] + 25) *
+                        datum[\"distinct_age\"]"}
                        {:type "formula"
                         :field "child_height"
                         :expr "200"}
@@ -68,10 +69,10 @@
                      :type "group"
                      :from {:data "summary"
                             :transform [{:type "facet"
-                                        :groupby ["age"]}]}
+                                         :groupby ["age"]}]}
                      :properties {:update {:x {:scale "column"
                                                :field "age"
-                                               :offset 2}
+                                               :offset 5}
                                            :y {:value 8}
                                            :width {:field {:parent "child_width"}}
                                            :height {:field {:parent "child_height"}}
@@ -88,7 +89,7 @@
                                                   :offset "zero"}]}
                               :properties {:update {:xc {:scale "x"
                                                          :field "gender"}
-                                                    :width {:value 5}
+                                                    :width {:value 15}
                                                     :y {:scale "y"
                                                         :field "sum_people_start"}
                                                     :y2 {:scale "y"
@@ -99,7 +100,7 @@
                       :type "ordinal"
                       :domain {:data "summary"
                                :field "age"
-                               :sort true}
+                               :sort "ascending"}
                       :range "width"
                       :round true}
                      {:name "x"
@@ -107,7 +108,7 @@
                       :domain {:data "summary"
                                :field "gender"
                                :sort true}
-                      :bandSize 6
+                      :bandSize 12
                       :round true
                       :points true
                       :padding 1}
