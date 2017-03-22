@@ -1,9 +1,9 @@
 (ns vega-viewer.vega.specs.grouped-bar-chart
   (:require [vega-viewer.vega.specs.constants
              :refer [band-width bar-color bar-height bar-height-offset
-                     default-chart-width tooltip-height tooltip-width
-                     tooltip-offset tooltip-opacity tooltip-stroke-color
-                     y-offset max-height]]
+                     default-chart-width palette tooltip-height
+                     tooltip-width tooltip-offset tooltip-opacity
+                     tooltip-stroke-color y-offset max-height]]
             [vega-viewer.vega.specs.utils
              :refer [get-tooltip-text-marks
                      set-status-text
@@ -123,8 +123,7 @@
                       :type "ordinal"
                       :domain {:data "summary"
                                :field "z"
-                               :sort true}
-                      :range ["#EA98D2", "#659CCA"]}]
+                               :sort true}}]
             :axes [{:type "x"
                     :scale "column"
                     :offset -8
@@ -138,7 +137,7 @@
 (defn generate-grouped-bar-chart-vega-spec
   [{:keys [data height width status-text
            maximum-y-axis-label-length]}
-   & {:keys [responsive?]}]
+   & {:keys [responsive? user-defined-palette]}]
   (let [chart-height (min (or height (* (count data) band-width)) max-height)
         chart-width (or width
                         (and (not responsive?)
@@ -147,5 +146,8 @@
         (assoc-in [:data 0 :values] data)
         (assoc :height chart-height)
         (assoc :width chart-width)
+        (assoc-in [:marks 0 :scales 3 :range] (if (seq user-defined-palette)
+                                                user-defined-palette
+                                                palette))
         (set-status-text status-text chart-height)
         (truncate-y-axis-labels maximum-y-axis-label-length))))
