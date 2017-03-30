@@ -97,8 +97,7 @@
             :scales [{:name "column"
                       :type "ordinal"
                       :domain {:data "summary"
-                               :field "x"
-                               :sort "ascending"}
+                               :field "x"}
                       :range "width"
                       :round true}
                      {:name "x"
