@@ -5038,6 +5038,16 @@
                     }
                   ]
                 },
+                "bandSize": {
+                  "oneOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "$ref": "#/refs/signal"
+                    }
+                  ]
+                },
                 "points": {
                   "oneOf": [
                     {
