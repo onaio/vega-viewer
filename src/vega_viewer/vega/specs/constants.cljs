@@ -34,8 +34,7 @@
 
 (def tooltip-height 36)
 (def tooltip-width 200)
+(def duration-tooltip-width 310)
 (def tooltip-offset 5)
 (def tooltip-opacity 0.95)
 (def tooltip-stroke-color "#bbb")
-
-(def grouped-chart-palette ["#EA98D2", "#659CCA"])

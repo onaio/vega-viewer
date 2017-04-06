@@ -2,7 +2,8 @@
   (:require [clojure.string :refer [join]]
             [vega-viewer.vega.specs.constants
              :refer [band-width tooltip-height tooltip-stroke-color
-                     tooltip-width tooltip-offset tooltip-opacity]]))
+                     tooltip-width duration-tooltip-width
+                     tooltip-offset tooltip-opacity]]))
 
 (defn get-tooltip-text-marks
   [label-field value-field]
@@ -43,6 +44,42 @@
         :y2 {:rule [{:predicate {:name "isTooltipVisible?"}
                      :value 0}
                     {:value rule-height}]}
+        :strokeWidth {:value 1}}}}]))
+
+(defn get-duration-chart-tooltip-text-marks
+  [{:keys [label-field start-value end-value]}]
+  (let [format-specifier (str " | number:'.3s' }}")
+        tooltip-text-y-displacement 22
+        label-text-x-displacement 10
+        rule-x-displacement 160]
+    [{:type "text"
+      :properties {:enter {:align {:value "left"}
+                           :fill {:value "#444"}}
+                   :update {:y {:value tooltip-text-y-displacement}
+                            :x {:value label-text-x-displacement}
+                            :fillOpacity
+                            {:rule [{:predicate
+                                     {:name "isTooltipVisible?"}
+                                     :value 0}
+                                    {:value 1}]}
+                            :text
+                            {:template
+                             (str "{{ tooltipData."
+                                  label-field " | truncate:8 }}"
+                                  " Submission(s) between "
+                                  "{{ tooltipData."
+                                  start-value format-specifier
+                                  " and "
+                                  "{{ tooltipData."
+                                  end-value format-specifier " min")}}}}
+     {:type "rule"
+      :properties
+      {:update
+       {:x {:value rule-x-displacement}
+        :stroke {:value tooltip-stroke-color}
+        :y2 {:rule [{:predicate {:name "isTooltipVisible?"}
+                     :value 0}
+                    {:value tooltip-height}]}
         :strokeWidth {:value 1}}}}]))
 
 (defn set-status-text
@@ -133,21 +170,25 @@
                            {:enter {:align {:value "center"}
                                     :fill {:value "#fff"}}
                             :update {:y      {:signal "tooltipY"
-                                              :offset tooltip-offset}
+                                              :offset 5}
                                      :x      {:signal "tooltipX"
-                                              :offset tooltip-offset}
+                                              :offset -50}
                                      :height {:rule [{:predicate
                                                       {:name
                                                        "isTooltipVisible?"}
                                                       :value 0}
                                                      {:value tooltip-height}]}
-                                     :width       {:value tooltip-width}
-                                     :fillOpacity {:value tooltip-opacity}
+                                     :width       {:value 265}
+                                     :fillOpacity {:value 1}
                                      :stroke      {:value tooltip-stroke-color}
                                      :strokeWidth
                                      {:rule
                                       [{:predicate {:name "isTooltipVisible?"}
                                         :value 0}
                                        {:value 1}]}}}
-                           :marks (get-tooltip-text-marks "count" "bin_end")})
+                           :marks
+                           (get-duration-chart-tooltip-text-marks
+                            {:label-field  "count"
+                             :start-value  "bin_start"
+                             :end-value    "bin_end"})})
               marks))))
