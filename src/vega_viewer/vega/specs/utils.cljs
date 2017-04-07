@@ -46,6 +46,54 @@
                     {:value rule-height}]}
         :strokeWidth {:value 1}}}}]))
 
+(defn get-submitted-by-tooltip-text-marks
+  [label-field value-field]
+  (let [label-text-x-displacement 10
+        value-text-x-displacement 180
+        rule-x-displacement 160
+        rule-y-displacement 0
+        rule-height tooltip-height
+        tooltip-text-y-displacement 22
+        tooltip-text-color "#444"]
+    [{:type "text"
+      :properties {:enter {:align {:value "left"}
+                           :fill {:value tooltip-text-color}}
+                   :update {:y {:value tooltip-text-y-displacement}
+                            :x {:value label-text-x-displacement}
+                            :fillOpacity
+                            {:rule [{:predicate
+                                     {:name "isTooltipVisible?"}
+                                     :value 0}
+                                    {:value 1}]}
+                            :text
+                            {:template (str "{{ tooltipData."
+                                            label-field
+                                            " | truncate:25 }}")}}}}
+     {:type "text"
+      :properties {:enter {:align {:value "center "}
+                           :fill {:value tooltip-text-color}}
+                   :update {:y {:value tooltip-text-y-displacement}
+                            :x {:value value-text-x-displacement}
+                            :fillOpacity
+                            {:rule [{:predicate
+                                     {:name "isTooltipVisible?"}
+                                     :value 0}
+                                    {:value 1}]}
+                            :text
+                            {:template (str "{{ tooltipData."
+                                            value-field
+                                            " | truncate: 25 }}" " Submission(s)")}}}}
+     {:type "rule"
+      :properties
+      {:update
+       {:x {:value rule-x-displacement}
+        :y {:value rule-y-displacement}
+        :stroke {:value tooltip-stroke-color}
+        :y2 {:rule [{:predicate {:name "isTooltipVisible?"}
+                     :value 0}
+                    {:value rule-height}]}
+        :strokeWidth {:value 1}}}}]))
+
 (defn get-duration-chart-tooltip-text-marks
   [{:keys [label-field start-value end-value]}]
   (let [format-specifier (str " | number:'.3s' }}")
@@ -191,4 +239,32 @@
                             {:label-field  "count"
                              :start-value  "bin_start"
                              :end-value    "bin_end"})})
+              marks))))
+
+(defn custom-submitted-by-tooltips
+  [spec submitted-by-tooltips]
+  (update spec
+          :marks
+          (fn [marks]
+            (if submitted-by-tooltips
+              (conj marks {:type "group"
+                           :properties {:enter {:align {:value "center"}
+                                 :fill {:value "#fff"}}
+                           :update {:y {:signal "tooltipY"
+                                      :offset tooltip-offset}
+                                  :x {:signal "tooltipX"
+                                      :offset tooltip-offset}
+                                  :height {:rule [{:predicate
+                                                   {:name "isTooltipVisible?"}
+                                                   :value 0}
+                                                  {:value tooltip-height}]}
+                                  :width {:value 300}
+                                  :fillOpacity {:value tooltip-opacity}
+                                  :stroke {:value tooltip-stroke-color}
+                                  :strokeWidth
+                                  {:rule
+                                   [{:predicate {:name "isTooltipVisible?"}
+                                     :value 0}
+                                    {:value 1}]}}}
+            :marks (get-submitted-by-tooltip-text-marks "category" "frequency")})
               marks))))

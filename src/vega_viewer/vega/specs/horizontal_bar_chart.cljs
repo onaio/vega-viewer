@@ -13,6 +13,8 @@
                      y-offset max-height]]
             [vega-viewer.vega.specs.utils
              :refer [get-tooltip-text-marks
+                     get-submitted-by-tooltip-text-marks
+                     custom-submitted-by-tooltips
                      set-status-text
                      set-tooltip-bounds
                      show-percent-sign-on-tooltip
@@ -100,7 +102,7 @@
 (defn generate-horizontal-bar-chart-vega-spec
   [{:keys [data height width show-count-or-percent? status-text
            maximum-y-axis-label-length]}
-   & {:keys [responsive? x-axis-tick-label-format]}]
+   & {:keys [responsive? x-axis-tick-label-format submitted-by-tooltips]}]
   (let [count-or-percent #(if (= show-count-or-percent? :percent)
                             (-> %
                                 (assoc-in [:axes 0 :properties :labels :text
@@ -116,6 +118,7 @@
                              default-chart-width))]
     (-> horizontal-bar-chart-spec-template
         (update-x-axis-tick-labels x-axis-tick-label-format)
+        (custom-submitted-by-tooltips submitted-by-tooltips)
         (assoc-in [:data 0 :values] data)
         (assoc :height chart-height)
         (assoc :width chart-width)
