@@ -13,8 +13,7 @@
                      y-offset max-height]]
             [vega-viewer.vega.specs.utils
              :refer [get-tooltip-text-marks
-                     get-submitted-by-tooltip-text-marks
-                     custom-submitted-by-tooltips
+                     custom-chart-tooltips
                      set-status-text
                      set-tooltip-bounds
                      show-percent-sign-on-tooltip
@@ -83,7 +82,8 @@
                                    [{:predicate {:name "isTooltipVisible?"}
                                      :value 0}
                                     {:value 1}]}}}
-            :marks (get-tooltip-text-marks "category" "frequency")}]
+            :marks (get-tooltip-text-marks {:label-field "category"
+                                            :value-field "frequency"})}]
    :signals [{:name "tooltipData"
               :init {}
               :streams [{:type "rect:mouseover" :expr "datum"}
@@ -118,7 +118,7 @@
                              default-chart-width))]
     (-> horizontal-bar-chart-spec-template
         (update-x-axis-tick-labels x-axis-tick-label-format)
-        (custom-submitted-by-tooltips submitted-by-tooltips)
+        (custom-chart-tooltips {:submitted-by-tooltips submitted-by-tooltips})
         (assoc-in [:data 0 :values] data)
         (assoc :height chart-height)
         (assoc :width chart-width)

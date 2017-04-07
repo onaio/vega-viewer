@@ -94,7 +94,7 @@
       x-axis-tick-label-format
       (update-x-axis-tick-labels x-axis-tick-label-format)
       duration-chart-tooltips
-      (custom-chart-tooltips duration-chart-tooltips)
+      (custom-chart-tooltips {:duration-chart-tooltips duration-chart-tooltips})
       true (assoc-in [:data 0 :values]
                      (map (fn [value] {"value" value}) values))
       x-axis-title (assoc-in [:axes 0 :title] x-axis-title)

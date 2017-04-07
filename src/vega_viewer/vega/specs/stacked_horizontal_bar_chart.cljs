@@ -98,7 +98,8 @@
                                    [{:predicate {:name "isTooltipVisible?"}
                                      :value 0}
                                     {:value 1}]}}}
-            :marks (get-tooltip-text-marks "group" "frequency")}
+            :marks (get-tooltip-text-marks {:label-field "group"
+                                            :value-field "frequency"})}
            {:type "text"
             :from {:data "grouped-data"}
             :properties {:enter {:align {:value "center"}
