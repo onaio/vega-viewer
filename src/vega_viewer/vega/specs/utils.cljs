@@ -82,7 +82,8 @@
                             :text
                             {:template (str "{{ tooltipData."
                                             value-field
-                                            " | truncate: 25 }}" " Submission(s)")}}}}
+                                            " | truncate: 25 }}"
+                                            " Submission(s)")}}}}
      {:type "rule"
       :properties
       {:update
@@ -249,22 +250,23 @@
             (if submitted-by-tooltips
               (conj marks {:type "group"
                            :properties {:enter {:align {:value "center"}
-                                 :fill {:value "#fff"}}
-                           :update {:y {:signal "tooltipY"
-                                      :offset tooltip-offset}
-                                  :x {:signal "tooltipX"
-                                      :offset tooltip-offset}
-                                  :height {:rule [{:predicate
-                                                   {:name "isTooltipVisible?"}
-                                                   :value 0}
-                                                  {:value tooltip-height}]}
-                                  :width {:value 300}
-                                  :fillOpacity {:value tooltip-opacity}
-                                  :stroke {:value tooltip-stroke-color}
-                                  :strokeWidth
-                                  {:rule
-                                   [{:predicate {:name "isTooltipVisible?"}
-                                     :value 0}
-                                    {:value 1}]}}}
-            :marks (get-submitted-by-tooltip-text-marks "category" "frequency")})
+                                                :fill {:value "#fff"}}
+                                        :update {:y {:signal "tooltipY"
+                                                     :offset tooltip-offset}
+                                                 :x {:signal "tooltipX"
+                                                     :offset tooltip-offset}
+                                                 :height {:rule [{:predicate
+                                                                  {:name "isTooltipVisible?"}
+                                                                  :value 0}
+                                                                 {:value tooltip-height}]}
+                                                 :width {:value 300}
+                                                 :fillOpacity {:value tooltip-opacity}
+                                                 :stroke {:value tooltip-stroke-color}
+                                                 :strokeWidth
+                                                 {:rule
+                                                  [{:predicate {:name "isTooltipVisible?"}
+                                                    :value 0}
+                                                   {:value 1}]}}}
+                           :marks (get-submitted-by-tooltip-text-marks
+                                   "category" "frequency")})
               marks))))
