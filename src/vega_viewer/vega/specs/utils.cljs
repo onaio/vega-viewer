@@ -179,55 +179,56 @@
         duration-tooltip-width 265
         submitted-by-tooltip-width 300]
     (update spec
-          :marks
-          (fn [marks]
-            (if (or duration-chart-tooltips submitted-by-tooltips)
-              (conj marks {:type "group"
-                           :properties
-                           {:enter {:align {:value "center"}
-                                    :fill {:value "#fff"}}
-                            :update {:y      {:signal "tooltipY"
-                                              :offset
-                                              (cond
-                                                duration-chart-tooltips
-                                                duration-tooltip-y-offset
-                                                submitted-by-tooltips
-                                                tooltip-offset)}
-                                     :x      {:signal "tooltipX"
-                                              :offset
-                                              (cond
-                                                duration-chart-tooltips
-                                                duration-tooltip-x-offset
-                                                submitted-by-tooltips
-                                                tooltip-offset)}
-                                     :height {:rule [{:predicate
-                                                      {:name
-                                                       "isTooltipVisible?"}
-                                                      :value 0}
-                                                     {:value tooltip-height}]}
-                                     :width   {:value
-                                               (cond
-                                                 duration-chart-tooltips
-                                                 duration-tooltip-width
-                                                 submitted-by-tooltips
-                                                 submitted-by-tooltip-width)}
-                                     :fillOpacity {:value 1}
-                                     :stroke      {:value tooltip-stroke-color}
-                                     :strokeWidth
-                                     {:rule
-                                      [{:predicate {:name "isTooltipVisible?"}
-                                        :value 0}
-                                       {:value 1}]}}}
-                           :marks
-                           (cond
-                             duration-chart-tooltips
-                             (get-duration-chart-tooltip-text-marks
-                              {:label-field  "count"
-                               :start-value  "bin_start"
-                               :end-value    "bin_end"})
-                             submitted-by-tooltips
-                             (get-tooltip-text-marks
-                              {:label-field "category"
-                               :value-field "frequency"
-                               :submitted-by-chart? true}))})
-              marks)))))
+            :marks
+            (fn [marks]
+              (if (or duration-chart-tooltips submitted-by-tooltips)
+                (conj marks
+                      {:type "group"
+                       :properties
+                       {:enter {:align {:value "center"}
+                                :fill {:value "#fff"}}
+                        :update {:y      {:signal "tooltipY"
+                                          :offset
+                                          (cond
+                                            duration-chart-tooltips
+                                            duration-tooltip-y-offset
+                                            submitted-by-tooltips
+                                            tooltip-offset)}
+                                 :x      {:signal "tooltipX"
+                                          :offset
+                                          (cond
+                                            duration-chart-tooltips
+                                            duration-tooltip-x-offset
+                                            submitted-by-tooltips
+                                            tooltip-offset)}
+                                 :height {:rule [{:predicate
+                                                  {:name
+                                                   "isTooltipVisible?"}
+                                                  :value 0}
+                                                 {:value tooltip-height}]}
+                                 :width   {:value
+                                           (cond
+                                             duration-chart-tooltips
+                                             duration-tooltip-width
+                                             submitted-by-tooltips
+                                             submitted-by-tooltip-width)}
+                                 :fillOpacity {:value 1}
+                                 :stroke      {:value tooltip-stroke-color}
+                                 :strokeWidth
+                                 {:rule
+                                  [{:predicate {:name "isTooltipVisible?"}
+                                    :value 0}
+                                   {:value 1}]}}}
+                       :marks
+                       (cond
+                         duration-chart-tooltips
+                         (get-duration-chart-tooltip-text-marks
+                          {:label-field  "count"
+                           :start-value  "bin_start"
+                           :end-value    "bin_end"})
+                         submitted-by-tooltips
+                         (get-tooltip-text-marks
+                          {:label-field "category"
+                           :value-field "frequency"
+                           :submitted-by-chart? true}))})
+                marks)))))
