@@ -66,7 +66,7 @@
         label-text-x-displacement 10
         rule-x-displacement 160]
     [{:type "text"
-      :properties {:enter {:align {:value "left"}
+      :properties {:enter {:align {:value "center "}
                            :fill {:value "#444"}}
                    :update {:y {:value tooltip-text-y-displacement}
                             :x {:value label-text-x-displacement}
