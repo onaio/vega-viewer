@@ -1,14 +1,23 @@
 (ns vega-viewer.vega.specs.horizontal-bar-chart
   (:require [vega-viewer.vega.specs.constants
-             :refer [band-width bar-color bar-height bar-height-offset
-                     default-chart-width tooltip-height tooltip-width
-                     tooltip-offset tooltip-opacity tooltip-stroke-color
+             :refer [band-width
+                     bar-color
+                     bar-height
+                     bar-height-offset
+                     default-chart-width
+                     tooltip-height
+                     tooltip-width
+                     tooltip-offset
+                     tooltip-opacity
+                     tooltip-stroke-color
                      y-offset max-height]]
             [vega-viewer.vega.specs.utils
              :refer [get-tooltip-text-marks
+                     custom-chart-tooltips
                      set-status-text
                      set-tooltip-bounds
                      show-percent-sign-on-tooltip
+                     update-x-axis-tick-labels
                      truncate-y-axis-labels]]))
 
 (def horizontal-bar-chart-spec-template
@@ -73,7 +82,8 @@
                                    [{:predicate {:name "isTooltipVisible?"}
                                      :value 0}
                                     {:value 1}]}}}
-            :marks (get-tooltip-text-marks "category" "frequency")}]
+            :marks (get-tooltip-text-marks {:label-field "category"
+                                            :value-field "frequency"})}]
    :signals [{:name "tooltipData"
               :init {}
               :streams [{:type "rect:mouseover" :expr "datum"}
@@ -92,7 +102,7 @@
 (defn generate-horizontal-bar-chart-vega-spec
   [{:keys [data height width show-count-or-percent? status-text
            maximum-y-axis-label-length]}
-   & {:keys [responsive?]}]
+   & {:keys [responsive? x-axis-tick-label-format submitted-by-tooltips]}]
   (let [count-or-percent #(if (= show-count-or-percent? :percent)
                             (-> %
                                 (assoc-in [:axes 0 :properties :labels :text
@@ -107,6 +117,8 @@
                         (and (not responsive?)
                              default-chart-width))]
     (-> horizontal-bar-chart-spec-template
+        (update-x-axis-tick-labels x-axis-tick-label-format)
+        (custom-chart-tooltips {:submitted-by-tooltips submitted-by-tooltips})
         (assoc-in [:data 0 :values] data)
         (assoc :height chart-height)
         (assoc :width chart-width)

@@ -98,7 +98,8 @@
                                    [{:predicate {:name "isTooltipVisible?"}
                                      :value 0}
                                     {:value 1}]}}}
-            :marks (get-tooltip-text-marks "group" "frequency")}
+            :marks (get-tooltip-text-marks {:label-field "group"
+                                            :value-field "frequency"})}
            {:type "text"
             :from {:data "grouped-data"}
             :properties {:enter {:align {:value "center"}
@@ -137,7 +138,8 @@
   (let [count-or-percent #(if (= show-count-or-percent? :percent)
                             (->
                              %
-                             (assoc-in [:data 2 :transform 0 :offset] "normalize")
+                             (assoc-in [:data 2 :transform 0 :offset]
+                                       "normalize")
                              (assoc-in [:scales 1 :domainMax] 1)
                              (assoc-in [:axes 0 :format] "%")
                              (assoc-in

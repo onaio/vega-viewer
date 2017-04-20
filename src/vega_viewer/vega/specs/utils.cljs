@@ -2,10 +2,11 @@
   (:require [clojure.string :refer [join]]
             [vega-viewer.vega.specs.constants
              :refer [band-width tooltip-height tooltip-stroke-color
-                     tooltip-width]]))
+                     tooltip-width duration-tooltip-width
+                     tooltip-offset tooltip-opacity]]))
 
 (defn get-tooltip-text-marks
-  [label-field value-field]
+  [{:keys [label-field value-field submitted-by-chart?]}]
   (let [label-text-x-displacement 10
         value-text-x-displacement 180
         rule-x-displacement 160
@@ -28,12 +29,25 @@
                                             label-field
                                             " | truncate:25 }}")}}}}
      {:type "text"
-      :properties {:enter {:align {:value "center"}
+      :properties {:enter {:align {:value (when-not submitted-by-chart?
+                                            (str "center"))}
                            :fill {:value tooltip-text-color}}
                    :update {:y {:value tooltip-text-y-displacement}
                             :x {:value value-text-x-displacement}
+                            :fillOpacity
+                            {:rule [{:predicate
+                                     {:name "isTooltipVisible?"}
+                                     :value 0}
+                                    {:value 1}]}
                             :text
-                            {:signal (str "tooltipData." value-field)}}}}
+                            {:template (if submitted-by-chart?
+                                         (str "{{ tooltipData."
+                                              value-field
+                                              " | truncate: 25 }}"
+                                              " Submission(s)")
+                                         (str "{{ tooltipData."
+                                              value-field
+                                              " | truncate: 10 }}"))}}}}
      {:type "rule"
       :properties
       {:update
@@ -43,6 +57,42 @@
         :y2 {:rule [{:predicate {:name "isTooltipVisible?"}
                      :value 0}
                     {:value rule-height}]}
+        :strokeWidth {:value 1}}}}]))
+
+(defn get-duration-chart-tooltip-text-marks
+  [{:keys [label-field start-value end-value]}]
+  (let [format-specifier (str " | number:'.3s' }}")
+        tooltip-text-y-displacement 22
+        label-text-x-displacement 10
+        rule-x-displacement 160]
+    [{:type "text"
+      :properties {:enter {:align {:value "left"}
+                           :fill {:value "#444"}}
+                   :update {:y {:value tooltip-text-y-displacement}
+                            :x {:value label-text-x-displacement}
+                            :fillOpacity
+                            {:rule [{:predicate
+                                     {:name "isTooltipVisible?"}
+                                     :value 0}
+                                    {:value 1}]}
+                            :text
+                            {:template
+                             (str "{{ tooltipData."
+                                  label-field " | truncate:8 }}"
+                                  " Submission(s) between "
+                                  "{{ tooltipData."
+                                  start-value format-specifier
+                                  " and "
+                                  "{{ tooltipData."
+                                  end-value format-specifier " min")}}}}
+     {:type "rule"
+      :properties
+      {:update
+       {:x {:value rule-x-displacement}
+        :stroke {:value tooltip-stroke-color}
+        :y2 {:rule [{:predicate {:name "isTooltipVisible?"}
+                     :value 0}
+                    {:value tooltip-height}]}
         :strokeWidth {:value 1}}}}]))
 
 (defn set-status-text
@@ -106,3 +156,79 @@
                    maximum-text-length
                    "}}"))
     spec))
+
+(defn update-x-axis-tick-labels
+  [spec x-axis-tick-label-format]
+  (cond-> spec
+    x-axis-tick-label-format
+    (assoc-in [:axes 0 :properties]
+              {:labels
+               {:text
+                {:template
+                 (str
+                  "{{ datum.data | "
+                  (condp = x-axis-tick-label-format
+                    :abbreviate-numbers "number:'.3s'"
+                    :time-based "number: '.3s'")
+                  "}}")}}})))
+
+(defn custom-chart-tooltips
+  [spec {:keys [duration-chart-tooltips submitted-by-tooltips]}]
+  (let [duration-tooltip-y-offset 5
+        duration-tooltip-x-offset -50
+        duration-tooltip-width 265
+        submitted-by-tooltip-width 300]
+    (update spec
+            :marks
+            (fn [marks]
+              (if (or duration-chart-tooltips submitted-by-tooltips)
+                (conj marks
+                      {:type "group"
+                       :properties
+                       {:enter {:align {:value "center"}
+                                :fill {:value "#fff"}}
+                        :update {:y      {:signal "tooltipY"
+                                          :offset
+                                          (cond
+                                            duration-chart-tooltips
+                                            duration-tooltip-y-offset
+                                            submitted-by-tooltips
+                                            tooltip-offset)}
+                                 :x      {:signal "tooltipX"
+                                          :offset
+                                          (cond
+                                            duration-chart-tooltips
+                                            duration-tooltip-x-offset
+                                            submitted-by-tooltips
+                                            tooltip-offset)}
+                                 :height {:rule [{:predicate
+                                                  {:name
+                                                   "isTooltipVisible?"}
+                                                  :value 0}
+                                                 {:value tooltip-height}]}
+                                 :width   {:value
+                                           (cond
+                                             duration-chart-tooltips
+                                             duration-tooltip-width
+                                             submitted-by-tooltips
+                                             submitted-by-tooltip-width)}
+                                 :fillOpacity {:value 1}
+                                 :stroke      {:value tooltip-stroke-color}
+                                 :strokeWidth
+                                 {:rule
+                                  [{:predicate {:name "isTooltipVisible?"}
+                                    :value 0}
+                                   {:value 1}]}}}
+                       :marks
+                       (cond
+                         duration-chart-tooltips
+                         (get-duration-chart-tooltip-text-marks
+                          {:label-field  "count"
+                           :start-value  "bin_start"
+                           :end-value    "bin_end"})
+                         submitted-by-tooltips
+                         (get-tooltip-text-marks
+                          {:label-field "category"
+                           :value-field "frequency"
+                           :submitted-by-chart? true}))})
+                marks)))))
