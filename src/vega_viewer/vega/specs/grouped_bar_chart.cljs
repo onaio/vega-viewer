@@ -128,7 +128,6 @@
                     :offset -6.5
                     :orient "bottom"
                     :tickSize 5
-                    :z-index 1
                     :properties {:axis {:strokeWidth {:value 1}}
                                  :labels {:angle {:value 300}
                                           :dx {:value 0}
