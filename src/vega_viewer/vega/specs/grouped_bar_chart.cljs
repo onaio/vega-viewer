@@ -125,10 +125,14 @@
                                :sort true}}]
             :axes [{:type "x"
                     :scale "column"
-                    :offset -8
+                    :offset -6.5
                     :orient "bottom"
                     :tickSize 5
-                    :properties {:axis {:strokeWidth {:value 1}}}}]
+                    :properties {:axis {:strokeWidth {:value 1}}
+                                 :labels {:angle {:value 300}
+                                          :dx {:value 0}
+                                          :dy {:value -7}
+                                          :align {:value "right"}}}}]
             :legends [{:fill "color"
                        :properties {:symbols {:shape {:value "circle"}
                                               :strokeWidth {:value 0}}}}]}]})
