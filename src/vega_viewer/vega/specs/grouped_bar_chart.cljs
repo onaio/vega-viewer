@@ -134,7 +134,8 @@
                                           :dy {:value -7}
                                           :align {:value "right"}}}}]
             :legends [{:fill "color"
-                       :properties {:symbols {:shape {:value "circle"}
+                       :offset 100
+                       :properties {:symbols {:shape       {:value "circle"}
                                               :strokeWidth {:value 0}}}}]}]})
 
 (defn generate-grouped-bar-chart-vega-spec
