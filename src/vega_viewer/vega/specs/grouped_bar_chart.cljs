@@ -7,6 +7,7 @@
             [vega-viewer.vega.specs.utils
              :refer [get-tooltip-text-marks
                      set-status-text
+                     chart-title-text
                      set-tooltip-bounds
                      show-percent-sign-on-tooltip
                      truncate-y-axis-labels]]))
@@ -138,7 +139,7 @@
                                               :strokeWidth {:value 0}}}}]}]})
 
 (defn generate-grouped-bar-chart-vega-spec
-  [{:keys [data height width status-text
+  [{:keys [data height width status-text chart-text
            maximum-y-axis-label-length]}
    & {:keys [responsive? user-defined-palette]}]
   (let [chart-height (min (or height (* (count data) band-width)) max-height)
@@ -153,4 +154,5 @@
                                                 user-defined-palette
                                                 palette))
         (set-status-text status-text chart-height)
+        (chart-title-text chart-text chart-height)
         (truncate-y-axis-labels maximum-y-axis-label-length))))

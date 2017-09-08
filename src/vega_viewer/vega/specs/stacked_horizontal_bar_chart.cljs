@@ -7,6 +7,7 @@
             [vega-viewer.vega.specs.utils
              :refer [get-tooltip-text-marks
                      set-status-text
+                     chart-title-text
                      set-tooltip-bounds
                      show-percent-sign-on-tooltip
                      truncate-y-axis-labels]]))
@@ -133,7 +134,7 @@
 
 (defn generate-stacked-horizontal-bar-chart-vega-spec
   [{:keys [data height width show-count-or-percent? status-text
-           maximum-y-axis-label-length]}
+           chart-text maximum-y-axis-label-length]}
    & {:keys [responsive? user-defined-palette]}]
   (let [count-or-percent #(if (= show-count-or-percent? :percent)
                             (->
@@ -181,5 +182,6 @@
         (set-tooltip-bounds :visualization-width chart-width)
         set-legend-values
         (set-status-text status-text chart-height)
+        (chart-title-text chart-text chart-height)
         (truncate-y-axis-labels maximum-y-axis-label-length)
         count-or-percent)))

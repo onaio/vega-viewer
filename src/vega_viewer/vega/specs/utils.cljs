@@ -112,6 +112,25 @@
                            :value chart-height}}}})
               marks))))
 
+(defn chart-title-text
+  [spec chart-text chart-height]
+  (update spec
+          :marks
+          (fn [marks]
+            (if chart-text
+              (conj marks
+                    {:type "text"
+                     :name "chart-text"
+                     :properties
+                     {:enter
+                      {:fill {:value "#292929"}
+                       :text {:value chart-text}
+                       :font {:value "sans-serif"}
+                       :fontSize {:value 18}
+                       :y {:offset (* -1 (+ 30 chart-height))
+                           :value chart-height}}}})
+              marks))))
+
 (defn show-percent-sign-on-tooltip
   [spec tooltip-mark-index]
   (assoc-in spec
