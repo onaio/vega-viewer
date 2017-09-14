@@ -69,10 +69,10 @@
                              :properties
                              {:labels
                               {:text
-                               {:template "{{ datum[\"data\"] | truncate:25 }}"}}
-                              :angle {:value 270}
-                              :align {:value "right"}
-                              :baseline {:value "middle"}}}]}
+                               {:template "{{ datum[\"data\"] | truncate:25 }}"}
+                               :angle {:value 270}
+                               :align {:value "right"}
+                               :baseline {:value "middle"}}}}]}
                     {:name "y-axes"
                      :type "group"
                      :properties
