@@ -14,6 +14,7 @@
                      tooltip-stroke-color
                      y-offset]]
             [vega-viewer.vega.specs.utils :refer [set-status-text
+                                                  chart-title-text
                                                   update-x-axis-tick-labels
                                                   get-tooltip-text-marks
                                                   set-tooltip-bounds
@@ -79,7 +80,7 @@
                             {:arg "id"}]}]})
 
 (defn generate-histogram-chart-vega-spec
-  [{values :data :keys [height status-text width]}
+  [{values :data :keys [height status-text chart-text width]}
    & {:keys [responsive?
              x-axis-tick-label-format
              x-axis-title
@@ -105,4 +106,5 @@
                                   default-chart-width)))
       (set-tooltip-bounds :visualization-height chart-height)
       (set-tooltip-bounds :visualization-width chart-width)
-      status-text (set-status-text status-text histogram-height))))
+      status-text (set-status-text status-text histogram-height)
+      chart-text (chart-title-text chart-text histogram-height))))

@@ -15,6 +15,7 @@
              :refer [get-tooltip-text-marks
                      custom-chart-tooltips
                      set-status-text
+                     chart-title-text
                      set-tooltip-bounds
                      show-percent-sign-on-tooltip
                      update-x-axis-tick-labels
@@ -101,7 +102,7 @@
 
 (defn generate-horizontal-bar-chart-vega-spec
   [{:keys [data height width show-count-or-percent? status-text
-           maximum-y-axis-label-length]}
+           chart-text maximum-y-axis-label-length]}
    & {:keys [responsive? x-axis-tick-label-format submitted-by-tooltips]}]
   (let [count-or-percent #(if (= show-count-or-percent? :percent)
                             (-> %
@@ -125,5 +126,6 @@
         (set-tooltip-bounds :visualization-height chart-height)
         (set-tooltip-bounds :visualization-width chart-width)
         (set-status-text status-text chart-height)
+        (chart-title-text chart-text chart-height)
         (truncate-y-axis-labels maximum-y-axis-label-length)
         count-or-percent)))
