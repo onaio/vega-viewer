@@ -69,7 +69,7 @@
                              :properties
                              {:labels
                               {:text
-                               {:template "{{ datum[\"data\"] | truncate:25 }}"}
+                               {:template "{{ datum.data | truncate:25 }}"}
                                :angle {:value 270}
                                :align {:value "right"}
                                :baseline {:value "middle"}}}}]}
@@ -154,8 +154,7 @@
                       :type "ordinal"
                       :domain {:data "summary"
                                :field "z"
-                               :sort true}
-                      :range "category20"}]
+                               :sort true}}]
             :axes [{:type "x"
                     :scale "column"
                     :orient "top"
@@ -182,5 +181,4 @@
         (assoc-in [:marks 0 :scales 3 :range] (if (seq user-defined-palette)
                                                 user-defined-palette
                                                 palette))
-        (set-status-text status-text chart-height)
-        (truncate-y-axis-labels maximum-y-axis-label-length))))
+        (set-status-text status-text chart-height))))

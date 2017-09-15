@@ -148,11 +148,9 @@
                              default-chart-width))]
     (-> grouped-bar-chart-spec-template
         (assoc-in [:data 0 :values] data)
-        (assoc :height chart-height)
-        (assoc :width chart-width)
-        (assoc-in [:marks 0 :scales 3 :range] (if (seq user-defined-palette)
-                                                user-defined-palette
-                                                palette))
+        (assoc :height chart-height :width chart-width)
+        (assoc-in [:marks 0 :scales 3 :range] (or (seq user-defined-palette)
+                                                  palette))
         (set-status-text status-text chart-height)
         (chart-title-text chart-text chart-height)
         (truncate-y-axis-labels maximum-y-axis-label-length))))
