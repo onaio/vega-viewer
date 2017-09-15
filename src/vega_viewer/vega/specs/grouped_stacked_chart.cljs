@@ -7,6 +7,7 @@
             [vega-viewer.vega.specs.utils
              :refer [get-tooltip-text-marks
                      set-status-text
+                     chart-title-text
                      set-tooltip-bounds
                      show-percent-sign-on-tooltip
                      truncate-y-axis-labels]]))
@@ -168,7 +169,7 @@
 
 (defn generate-grouped-stacked-chart-vega-spec
   [{:keys [data height width status-text
-           maximum-y-axis-label-length]}
+           chart-text maximum-y-axis-label-length]}
    & {:keys [responsive? user-defined-palette]}]
   (let [chart-height (min (or height (* (count data) band-width)) max-height)
         chart-width (or width
@@ -176,9 +177,10 @@
                              default-chart-width))]
     (-> grouped-stacked-chart-spec-template
         (assoc-in [:data 0 :values] data)
-        (assoc :height chart-height)
+        (assoc :height 100)
         (assoc :width chart-width)
         (assoc-in [:marks 0 :scales 3 :range] (if (seq user-defined-palette)
                                                 user-defined-palette
                                                 palette))
-        (set-status-text status-text chart-height))))
+        (set-status-text status-text chart-height)
+        (chart-title-text chart-text chart-height))))
