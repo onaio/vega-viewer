@@ -41,10 +41,10 @@
                         datum[\"distinct_u\"]"}
                        {:type "formula"
                         :field "child_height"
-                        :expr "200"}
+                        :expr "300"}
                        {:type "formula"
                         :field "height"
-                        :expr "datum[\"child_height\"] + 16"}]}]
+                        :expr "datum[\"child_height\"] + 20"}]}]
    :marks [{:name "root"
             :type "group"
             :from {:data "layout"}
@@ -146,7 +146,7 @@
                       :type "linear"
                       :domain {:data "stacked_scale"
                                :field "sum_sum_y"}
-                      :rangeMin 200
+                      :rangeMin 300
                       :rangeMax 0
                       :round true
                       :nice true
@@ -165,7 +165,43 @@
             :legends [{:fill "color"
                        :properties
                        {:symbols {:shape {:value "circle"}
-                                  :strokeWidth {:value 0}}}}]}]})
+                                  :strokeWidth {:value 0}}}}]}
+           {:type "group"
+            :properties {:enter {:align {:value "center"}
+                                 :fill {:value "#fff"}}
+                         :update {:y {:signal "tooltipY"
+                                      :offset tooltip-offset}
+                                  :x {:signal "tooltipX"
+                                      :offset tooltip-offset}
+                                  :height {:rule
+                                           [{:predicate
+                                             {:name "isTooltipVisible?"}
+                                             :value 0}
+                                            {:value tooltip-height}]}
+                                  :width {:value tooltip-width}
+                                  :fillOpacity {:value tooltip-opacity}
+                                  :stroke {:value tooltip-stroke-color}
+                                  :strokeWidth
+                                  {:rule
+                                   [{:predicate {:name "isTooltipVisible?"}
+                                     :value 0}
+                                    {:value 1}]}}}
+            :marks (get-tooltip-text-marks {:label-field "z"
+                                            :value-field "sum_y"})}]
+   :signals [{:name "tooltipData"
+              :init {}
+              :streams [{:type "rect:mouseover" :expr "datum"}
+                        {:type "rect:mouseout" :expr "{}"}]}
+             {:name "tooltipX"
+              :init {}
+              :streams [{:type "mousemove" :expr "eventX()"}]}
+             {:name "tooltipY"
+              :init {}
+              :streams [{:type "mousemove" :expr "eventY()"}]}]
+   :predicates [{:name "isTooltipVisible?"
+                 :type "==",
+                 :operands [{:signal "tooltipData._id"}
+                            {:arg "id"}]}]})
 
 (defn generate-grouped-stacked-chart-vega-spec
   [{:keys [data height width status-text
@@ -182,5 +218,7 @@
         (assoc-in [:marks 0 :scales 3 :range] (if (seq user-defined-palette)
                                                 user-defined-palette
                                                 palette))
+        (set-tooltip-bounds :visualization-height chart-height)
+        (set-tooltip-bounds :visualization-width chart-width)
         (set-status-text status-text chart-height)
         (chart-title-text chart-text chart-height))))
