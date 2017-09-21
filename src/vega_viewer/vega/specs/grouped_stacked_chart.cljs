@@ -117,7 +117,23 @@
                                         :y2 {:scale "y"
                                              :field "sum_y_end"}
                                         :fill {:scale "color"
-                                               :field "z"}}}}]
+                                               :field "z"}}}}
+                             {:type "text"
+                              :from {:transform [{:type "stack"
+                                                  :groupby ["x"]
+                                                  :field "sum_y"
+                                                  :sortby ["-z"]
+                                                  :output
+                                                  {:start "sum_y_start"
+                                                   :end "sum_y_end"}
+                                                  :offset "zero"}]}
+                              :properties {:enter {:align {:value "center"}
+                                                   :y {:scale "y"
+                                                       :field "sum_y_start"}
+                                                   :x {:scale "x"
+                                                       `:field "x"}
+                                                   :fill {:value "#fff"}
+                                                   :text {:template "{{datum.sum_y}}"}}}}]
                      :axes [{:type "y"
                              :scale "y"
                              :grid true
