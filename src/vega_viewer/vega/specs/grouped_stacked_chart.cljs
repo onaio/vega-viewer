@@ -132,8 +132,11 @@
                                                        :field "sum_y_start"}
                                                    :x {:scale "x"
                                                        `:field "x"}
+                                                   :baseline {:value "bottom"}
                                                    :fill {:value "#fff"}
-                                                   :text {:template "{{datum.sum_y}}"}}}}]
+                                                   :text
+                                                   {:template
+                                                    "{{datum.sum_y}}"}}}}]
                      :axes [{:type "y"
                              :scale "y"
                              :grid true
@@ -220,9 +223,9 @@
                             {:arg "id"}]}]})
 
 (defn generate-grouped-stacked-chart-vega-spec
-  [{:keys [data height width show-count-or-percent?
-           is-grouped-stacked-chart? status-text chart-text
-           maximum-y-axis-label-length]}
+  [{:keys [data height width show-count-or-percent? status-text chart-text
+           maximum-y-axis-label-length]
+    grouped-stacked :is-grouped-stacked-chart?}
    & {:keys [responsive? user-defined-palette]}]
   (let [count-or-percent #(if (= show-count-or-percent? :percent)
                             (->
@@ -232,7 +235,8 @@
                              (assoc-in [:marks 0 :scales 2 :domainMax] 1)
                              (assoc-in [:marks 0 :marks 1 :axes 0 :format] "%")
                              (assoc-in
-                              [:marks 0 :marks 2 :marks 1 :properties :enter :text :template]
+                              [:marks 0 :marks 2 :marks 1 :properties :enter
+                               :text :template]
                               "{{datum.sum_y}}%")
 
                              (assoc-in [:marks 1 :marks 1 :properties
@@ -242,8 +246,7 @@
                                           {:name "tooltipVisible"}}
                                          {:template
                                           "{{tooltipData.sum_y}}%"}]})
-                             (show-percent-sign-on-tooltip 1
-                                                           is-grouped-stacked-chart?))
+                             (show-percent-sign-on-tooltip 1 grouped-stacked))
                             %)
         chart-height (min (or height (* (count data) band-width)) max-height)
         chart-width (or width
