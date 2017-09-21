@@ -132,11 +132,13 @@
               marks))))
 
 (defn show-percent-sign-on-tooltip
-  [spec tooltip-mark-index]
+  [spec tooltip-mark-index & [is-grouped-stacked-chart?]]
   (assoc-in spec
             [:marks tooltip-mark-index :marks 1 :properties :update :text]
             {:rule [{:predicate {:name "isTooltipVisible?"}}
-                    {:template "{{tooltipData.frequency}} %"}]}))
+                    {:template (if is-grouped-stacked-chart?
+                                 "{{tooltipData.sum_y}} %"
+                                 "{{tooltipData.frequency}} %")}]}))
 
 (defn set-tooltip-bounds
   [{:keys [signals] :as spec}

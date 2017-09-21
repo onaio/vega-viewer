@@ -220,10 +220,32 @@
                             {:arg "id"}]}]})
 
 (defn generate-grouped-stacked-chart-vega-spec
-  [{:keys [data height width status-text
-           chart-text maximum-y-axis-label-length]}
+  [{:keys [data height width show-count-or-percent?
+           is-grouped-stacked-chart? status-text chart-text
+           maximum-y-axis-label-length]}
    & {:keys [responsive? user-defined-palette]}]
-  (let [chart-height (min (or height (* (count data) band-width)) max-height)
+  (let [count-or-percent #(if (= show-count-or-percent? :percent)
+                            (->
+                             %
+                             (assoc-in [:data 2 :transform 0 :offset]
+                                       "normalize")
+                             (assoc-in [:marks 0 :scales 2 :domainMax] 1)
+                             (assoc-in [:marks 0 :marks 1 :axes 0 :format] "%")
+                             (assoc-in
+                              [:marks 0 :marks 2 :marks 1 :properties :enter :text :template]
+                              "{{datum.sum_y}}%")
+
+                             (assoc-in [:marks 1 :marks 1 :properties
+                                        :update :text]
+                                       {:rule
+                                        [{:predicate
+                                          {:name "tooltipVisible"}}
+                                         {:template
+                                          "{{tooltipData.sum_y}}%"}]})
+                             (show-percent-sign-on-tooltip 1
+                                                           is-grouped-stacked-chart?))
+                            %)
+        chart-height (min (or height (* (count data) band-width)) max-height)
         chart-width (or width
                         (and (not responsive?)
                              default-chart-width))]
@@ -237,4 +259,5 @@
         (set-tooltip-bounds :visualization-height chart-height)
         (set-tooltip-bounds :visualization-width chart-width)
         (set-status-text status-text chart-height)
-        (chart-title-text chart-text chart-height))))
+        (chart-title-text chart-text chart-height)
+        count-or-percent)))
