@@ -132,7 +132,7 @@
               marks))))
 
 (defn show-percent-sign-on-tooltip
-  [spec tooltip-mark-index & [is-grouped-stacked-chart?]]
+  [spec tooltip-mark-index & {:keys [is-grouped-stacked-chart?]}]
   (assoc-in spec
             [:marks tooltip-mark-index :marks 1 :properties :update :text]
             {:rule [{:predicate {:name "isTooltipVisible?"}}

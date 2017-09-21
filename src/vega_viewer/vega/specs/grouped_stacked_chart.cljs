@@ -224,8 +224,7 @@
 
 (defn generate-grouped-stacked-chart-vega-spec
   [{:keys [data height width show-count-or-percent? status-text chart-text
-           maximum-y-axis-label-length]
-    grouped-stacked :is-grouped-stacked-chart?}
+           maximum-y-axis-label-length]}
    & {:keys [responsive? user-defined-palette]}]
   (let [count-or-percent #(if (= show-count-or-percent? :percent)
                             (->
@@ -246,7 +245,8 @@
                                           {:name "tooltipVisible"}}
                                          {:template
                                           "{{tooltipData.sum_y}}%"}]})
-                             (show-percent-sign-on-tooltip 1 grouped-stacked))
+                             (show-percent-sign-on-tooltip 1
+                                                           :is-grouped-stacked-chart? true))
                             %)
         chart-height (min (or height (* (count data) band-width)) max-height)
         chart-width (or width
