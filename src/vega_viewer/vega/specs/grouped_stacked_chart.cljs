@@ -135,8 +135,7 @@
                                                    :baseline {:value "bottom"}
                                                    :fill {:value "#fff"}
                                                    :text
-                                                   {:template
-                                                    "{{datum.sum_y}}"}}}}]
+                                                   {:template ""}}}}]
                      :axes [{:type "y"
                              :scale "y"
                              :grid true
@@ -233,11 +232,6 @@
                                        "normalize")
                              (assoc-in [:marks 0 :scales 2 :domainMax] 1)
                              (assoc-in [:marks 0 :marks 1 :axes 0 :format] "%")
-                             (assoc-in
-                              [:marks 0 :marks 2 :marks 1 :properties :enter
-                               :text :template]
-                              "{{datum.sum_y}}%")
-
                              (assoc-in [:marks 1 :marks 1 :properties
                                         :update :text]
                                        {:rule
