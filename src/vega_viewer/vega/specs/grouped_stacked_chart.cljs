@@ -220,5 +220,5 @@
                                                 palette))
         (set-tooltip-bounds :visualization-height chart-height)
         (set-tooltip-bounds :visualization-width chart-width)
-        (set-status-text status-text chart-height)
+        (set-status-text status-text 330)
         (chart-title-text chart-text chart-height))))
