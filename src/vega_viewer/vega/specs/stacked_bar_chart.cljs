@@ -14,21 +14,7 @@
 
 (def stacked-bar-chart-spec-template
   {:data [{:name "table"
-           :values [{"x" "bangaladesh" "y" 292 "c" "Cynthia Akinyi"}
-                    {"x" "bangaladesh" "y" 303 "c" "Fatuma Mwakusema"}
-                    {"x" "bangaladesh" "y" 193 "c" "Gibson Kea"}
-                    {"x" "bangaladesh" "y" 252 "c" "Grace Nyambu"}
-                    {"x" "bangaladesh" "y" 342 "c" "Jane Kabui"}
-                    {"x" "bangaladesh" "y" 216 "c" "Joseph Ondiso"}
-                    {"x" "bangaladesh" "y" 260 "c" "Leonard Lector"}
-                    {"x" "bangaladesh" "y" 153 "c" "Peris Wambui"}
-                    {"x" "moroto" "y" 294 "c" "Andrew Mweteeli"}
-                    {"x" "moroto" "y" 183 "c" "Angeline Kache"}
-                    {"x" "moroto" "y" 231 "c" "Donald Akutoi"}
-                    {"x" "moroto" "y" 188 "c" "Fauzia  Shivisi"}
-                    {"x" "moroto" "y" 207 "c" "Kimm Nauli"}
-                    {"x" "moroto" "y" 356 "c" "Penina Muthoki"}
-                    {"x" "moroto" "y" 167 "c" "Teresia Wangeci"}]}
+           :values []}
           {:name "stats"
            :source "table"
            :transform [{:type "aggregate"
@@ -46,7 +32,7 @@
             {:name "color"
              :type "ordinal"
              :range "category10"
-             :domain {:data "table" :field "c"}}]
+             :domain {:data "table" :field "z"}}]
    :axes [{:type "x"
            :scale "x"}
           {:type "y"
@@ -59,17 +45,53 @@
                    :transform [{:type "stack"
                                 :groupby ["x"]
                                 :field "y"
-                                :sortby ["c"]}]}
+                                :sortby ["z"]}]}
             :properties {:enter
                          {:x {:scale "x" :field "x"}
                           :width {:scale "x" :band true :offset -3}
                           :y {:scale "y" :field "layout_start"}
                           :y2 {:scale "y" :field "layout_end"}
-                          :fill {:scale "color" :field "c"}}
+                          :fill {:scale "color" :field "z"}}
                          :update
                          {:fillOpacity {:value 1}}
                          :hover
-                         {:fillOpacity {:value 0.5}}}}]})
+                         {:fillOpacity {:value 0.5}}}}
+             {:type "group"
+                :properties {:enter {:align {:value "center"}
+                                        :fill {:value "#fff"}}
+                                :update {:y {:signal "tooltipY"
+                                        :offset tooltip-offset}
+                                        :x {:signal "tooltipX"
+                                        :offset tooltip-offset}
+                                        :height {:rule
+                                                [{:predicate
+                                                {:name "isTooltipVisible?"}
+                                                :value 0}
+                                                {:value tooltip-height}]}
+                                        :width {:value tooltip-width}
+                                        :fillOpacity {:value tooltip-opacity}
+                                        :stroke {:value tooltip-stroke-color}
+                                        :strokeWidth
+                                        {:rule
+                                        [{:predicate {:name "isTooltipVisible?"}
+                                        :value 0}
+                                        {:value 1}]}}}
+                :marks (get-tooltip-text-marks {:label-field "z"
+                                            :value-field "y"})}]
+   :signals [{:name "tooltipData"
+              :init {}
+              :streams [{:type "rect:mouseover" :expr "datum"}
+                        {:type "rect:mouseout" :expr "{}"}]}
+             {:name "tooltipX"
+              :init {}
+              :streams [{:type "mousemove" :expr "eventX()"}]}
+             {:name "tooltipY"
+              :init {}
+              :streams [{:type "mousemove" :expr "eventY()"}]}]
+   :predicates [{:name "isTooltipVisible?"
+                 :type "==",
+                 :operands [{:signal "tooltipData._id"}
+                            {:arg "id"}]}]})
 
 (defn generate-stacked-bar-chart-vega-spec
   [{:keys [data height width status-text chart-text
@@ -80,10 +102,12 @@
                         (and (not responsive?)
                              default-chart-width))]
     (-> stacked-bar-chart-spec-template
-        ;; (assoc-in [:data 0 :values] data)
+        (assoc-in [:data 0 :values] data)
         (assoc :height chart-height :width chart-width)
         (assoc-in [:marks 0 :scales 2 :range] (or (seq user-defined-palette)
                                                   palette))
+        (set-tooltip-bounds :visualization-height chart-height)
+        (set-tooltip-bounds :visualization-width chart-width)
         (set-status-text status-text chart-height)
         (chart-title-text chart-text chart-height)
         (truncate-y-axis-labels maximum-y-axis-label-length))))
