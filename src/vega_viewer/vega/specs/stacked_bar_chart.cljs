@@ -31,7 +31,6 @@
              :domain {:data "stats" :field "sum_y"}}
             {:name "color"
              :type "ordinal"
-             :range "category10"
              :domain {:data "table" :field "z"}}]
    :axes [{:type "x"
            :scale "x"}
@@ -56,27 +55,27 @@
                          {:fillOpacity {:value 1}}
                          :hover
                          {:fillOpacity {:value 0.5}}}}
-             {:type "group"
-                :properties {:enter {:align {:value "center"}
-                                        :fill {:value "#fff"}}
-                                :update {:y {:signal "tooltipY"
-                                        :offset tooltip-offset}
-                                        :x {:signal "tooltipX"
-                                        :offset tooltip-offset}
-                                        :height {:rule
-                                                [{:predicate
-                                                {:name "isTooltipVisible?"}
-                                                :value 0}
-                                                {:value tooltip-height}]}
-                                        :width {:value tooltip-width}
-                                        :fillOpacity {:value tooltip-opacity}
-                                        :stroke {:value tooltip-stroke-color}
-                                        :strokeWidth
-                                        {:rule
-                                        [{:predicate {:name "isTooltipVisible?"}
-                                        :value 0}
-                                        {:value 1}]}}}
-                :marks (get-tooltip-text-marks {:label-field "z"
+           {:type "group"
+            :properties {:enter {:align {:value "center"}
+                                 :fill {:value "#fff"}}
+                         :update {:y {:signal "tooltipY"
+                                      :offset tooltip-offset}
+                                  :x {:signal "tooltipX"
+                                      :offset tooltip-offset}
+                                  :height {:rule
+                                           [{:predicate
+                                             {:name "isTooltipVisible?"}
+                                             :value 0}
+                                            {:value tooltip-height}]}
+                                  :width {:value tooltip-width}
+                                  :fillOpacity {:value tooltip-opacity}
+                                  :stroke {:value tooltip-stroke-color}
+                                  :strokeWidth
+                                  {:rule
+                                   [{:predicate {:name "isTooltipVisible?"}
+                                     :value 0}
+                                    {:value 1}]}}}
+            :marks (get-tooltip-text-marks {:label-field "z"
                                             :value-field "y"})}]
    :signals [{:name "tooltipData"
               :init {}
@@ -104,8 +103,8 @@
     (-> stacked-bar-chart-spec-template
         (assoc-in [:data 0 :values] data)
         (assoc :height chart-height :width chart-width)
-        (assoc-in [:marks 0 :scales 2 :range] (or (seq user-defined-palette)
-                                                  palette))
+        (assoc-in [:scales 2 :range] (or (seq user-defined-palette)
+                                         palette))
         (set-tooltip-bounds :visualization-height chart-height)
         (set-tooltip-bounds :visualization-width chart-width)
         (set-status-text status-text chart-height)
