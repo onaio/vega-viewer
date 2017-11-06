@@ -31,7 +31,6 @@
              :domain {:data "stats" :field "sum_y"}}
             {:name "color"
              :type "ordinal"
-             :range "category10"
              :domain {:data "table" :field "z"}}]
    :axes [{:type "x"
            :scale "x"}
@@ -104,7 +103,7 @@
     (-> stacked-bar-chart-spec-template
         (assoc-in [:data 0 :values] data)
         (assoc :height chart-height :width chart-width)
-        (assoc-in [:marks 0 :scales 2 :range] (or (seq user-defined-palette)
+        (assoc-in [:scales 2 :range] (or (seq user-defined-palette)
                                                   palette))
         (set-tooltip-bounds :visualization-height chart-height)
         (set-tooltip-bounds :visualization-width chart-width)
