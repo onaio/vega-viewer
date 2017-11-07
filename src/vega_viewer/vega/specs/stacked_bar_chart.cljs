@@ -84,7 +84,7 @@
                                      :value 0}
                                     {:value 1}]}}}
             :marks (get-tooltip-text-marks {:label-field "z"
-                                            :value-field "y"})}]
+                                            :value-field "sum_y"})}]
    :signals [{:name "tooltipData"
               :init {}
               :streams [{:type "rect:mouseover" :expr "datum"}
