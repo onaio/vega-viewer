@@ -7,7 +7,8 @@
             [vega-viewer.vega.specs.grouped-bar-chart-test]
             [vega-viewer.vega.specs.grouped-stacked-chart-test]
             [vega-viewer.vega.specs.horizontal-bar-chart-test]
-            [vega-viewer.vega.specs.stacked-horizontal-bar-chart-test]))
+            [vega-viewer.vega.specs.stacked-horizontal-bar-chart-test]
+            [vega-viewer.vega.specs.stacked-bar-chart-test]))
 
 (enable-console-print!)
 
@@ -25,6 +26,7 @@
         'vega-viewer.vega.specs.grouped-bar-chart-test
         'vega-viewer.vega.specs.grouped-stacked-chart-test
         'vega-viewer.vega.specs.horizontal-bar-chart-test
-        'vega-viewer.vega.specs.stacked-horizontal-bar-chart-test))
+        'vega-viewer.vega.specs.stacked-horizontal-bar-chart-test
+        'vega-viewer.vega.specs.stacked-bar-chart-test))
     0
     1))

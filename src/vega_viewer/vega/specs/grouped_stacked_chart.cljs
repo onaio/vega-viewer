@@ -103,7 +103,7 @@
                               :from {:transform [{:type "stack"
                                                   :groupby ["x"]
                                                   :field "sum_y"
-                                                  :sortby ["-z"]
+                                                  :sortby ["z"]
                                                   :output
                                                   {:start "sum_y_start"
                                                    :end "sum_y_end"}
