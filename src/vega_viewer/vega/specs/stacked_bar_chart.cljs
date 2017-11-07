@@ -36,7 +36,7 @@
              :domain {:data "stacked_scale" :field "sum_sum_y"}}
             {:name "color"
              :type "ordinal"
-             :domain {:data "stats" :field "z"}}]
+             :domain {:data "table" :field "z"}}]
    :axes [{:type "x"
            :scale "x"}
           {:type "y"
@@ -84,7 +84,7 @@
                                      :value 0}
                                     {:value 1}]}}}
             :marks (get-tooltip-text-marks {:label-field "z"
-                                            :value-field "sum_y"})}]
+                                            :value-field "y"})}]
    :signals [{:name "tooltipData"
               :init {}
               :streams [{:type "rect:mouseover" :expr "datum"}
