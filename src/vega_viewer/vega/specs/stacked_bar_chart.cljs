@@ -18,8 +18,13 @@
           {:name "stats"
            :source "table"
            :transform [{:type "aggregate"
-                        :groupby ["x"]
-                        :summarize [{:field "y" :ops ["sum"]}]}]}]
+                        :groupby ["x","z"]
+                        :summarize {:y ["sum"]}}]}
+          {:name "stacked_scale"
+           :source "stats"
+           :transform [{:type "aggregate"
+                        :summarize [{:ops ["sum"], :field "sum_y"}]
+                        :groupby ["x"]}]}]
    :scales [{:name "x"
              :type "ordinal"
              :range "width"
@@ -28,10 +33,10 @@
              :type "linear"
              :range "height"
              :nice true
-             :domain {:data "stats" :field "sum_y"}}
+             :domain {:data "stacked_scale" :field "sum_sum_y"}}
             {:name "color"
              :type "ordinal"
-             :domain {:data "table" :field "z"}}]
+             :domain {:data "stats" :field "z"}}]
    :axes [{:type "x"
            :scale "x"}
           {:type "y"
@@ -40,43 +45,46 @@
               :properties {:symbols {:shape {:value "circle"}
                                      :strokeWidth {:value 0}}}}]
    :marks [{:type "rect"
-            :from {:data "table"
+            :from {:data "stats"
                    :transform [{:type "stack"
                                 :groupby ["x"]
-                                :field "y"
-                                :sortby ["z"]}]}
+                                :field "sum_y"
+                                :sortby ["z"]
+                                :output {:start "sum_y_start"
+                                         :end "sum_y_end"}
+                                :offset "zero"}]}
             :properties {:enter
-                         {:x {:scale "x" :field "x"}
+                         {:x {:scale "x" :field "x" :offset 3}
                           :width {:scale "x" :band true :offset -3}
-                          :y {:scale "y" :field "layout_start"}
-                          :y2 {:scale "y" :field "layout_end"}
+                          :y {:scale "y" :field "sum_y_start"}
+                          :y2 {:scale "y" :field "sum_y_end"}
                           :fill {:scale "color" :field "z"}}
                          :update
                          {:fillOpacity {:value 1}}
                          :hover
                          {:fillOpacity {:value 0.5}}}}
-             {:type "group"
-                :properties {:enter {:align {:value "center"}
-                                        :fill {:value "#fff"}}
-                                :update {:y {:signal "tooltipY"
-                                        :offset tooltip-offset}
-                                        :x {:signal "tooltipX"
-                                        :offset tooltip-offset}
-                                        :height {:rule
-                                                [{:predicate
-                                                {:name "isTooltipVisible?"}
-                                                :value 0}
-                                                {:value tooltip-height}]}
-                                        :width {:value tooltip-width}
-                                        :fillOpacity {:value tooltip-opacity}
-                                        :stroke {:value tooltip-stroke-color}
-                                        :strokeWidth
-                                        {:rule
-                                        [{:predicate {:name "isTooltipVisible?"}
-                                        :value 0}
-                                        {:value 1}]}}}
-                :marks (get-tooltip-text-marks {:label-field "z"
-                                            :value-field "y"})}]
+           {:type "group"
+            :properties {:enter {:align {:value "center"}
+                                 :fill {:value "#fff"}}
+                         :update {:y {:signal "tooltipY"
+                                      :offset tooltip-offset}
+                                  :x {:signal "tooltipX"
+                                      :offset tooltip-offset}
+                                  :height {:rule
+                                           [{:predicate
+                                             {:name "isTooltipVisible?"}
+                                             :value 0}
+                                            {:value tooltip-height}]}
+                                  :width {:value tooltip-width}
+                                  :fillOpacity {:value tooltip-opacity}
+                                  :stroke {:value tooltip-stroke-color}
+                                  :strokeWidth
+                                  {:rule
+                                   [{:predicate {:name "isTooltipVisible?"}
+                                     :value 0}
+                                    {:value 1}]}}}
+            :marks (get-tooltip-text-marks {:label-field "z"
+                                            :value-field "sum_y"})}]
    :signals [{:name "tooltipData"
               :init {}
               :streams [{:type "rect:mouseover" :expr "datum"}
@@ -104,7 +112,7 @@
         (assoc-in [:data 0 :values] data)
         (assoc :height chart-height :width chart-width)
         (assoc-in [:scales 2 :range] (or (seq user-defined-palette)
-                                                  palette))
+                                         palette))
         (set-tooltip-bounds :visualization-height chart-height)
         (set-tooltip-bounds :visualization-width chart-width)
         (set-status-text status-text chart-height)
