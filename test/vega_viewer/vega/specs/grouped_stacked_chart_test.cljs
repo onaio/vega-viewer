@@ -13,4 +13,10 @@
                {"u" "Acceptable" "x" "male" "z" "Kisumu" "y" 66}]]
     (testing "generated grouped bar chart spec is vega compliant"
       (let [spec (generate-grouped-stacked-chart-vega-spec {:data data})]
+        (test-validity spec)))
+    (testing "generated grouped stacked chart with percent display is
+              vega compliant"
+      (let [spec (generate-grouped-stacked-chart-vega-spec
+                  {:data data
+                   :show-count-or-percent? true})]
         (test-validity spec)))))

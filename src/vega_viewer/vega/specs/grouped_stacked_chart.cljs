@@ -117,7 +117,25 @@
                                         :y2 {:scale "y"
                                              :field "sum_y_end"}
                                         :fill {:scale "color"
-                                               :field "z"}}}}]
+                                               :field "z"}}}}
+                             {:type "text"
+                              :from {:transform [{:type "stack"
+                                                  :groupby ["x"]
+                                                  :field "sum_y"
+                                                  :sortby ["-z"]
+                                                  :output
+                                                  {:start "sum_y_start"
+                                                   :end "sum_y_end"}
+                                                  :offset "zero"}]}
+                              :properties {:enter {:align {:value "center"}
+                                                   :y {:scale "y"
+                                                       :field "sum_y_start"}
+                                                   :x {:scale "x"
+                                                       `:field "x"}
+                                                   :baseline {:value "bottom"}
+                                                   :fill {:value "#fff"}
+                                                   :text
+                                                   {:template ""}}}}]
                      :axes [{:type "y"
                              :scale "y"
                              :grid true
@@ -204,10 +222,29 @@
                             {:arg "id"}]}]})
 
 (defn generate-grouped-stacked-chart-vega-spec
-  [{:keys [data height width status-text
-           chart-text maximum-y-axis-label-length]}
+  [{:keys [data height width show-count-or-percent? status-text chart-text
+           maximum-y-axis-label-length]}
    & {:keys [responsive? user-defined-palette]}]
-  (let [chart-height (min (or height (* (count data) band-width)) max-height)
+  (let [count-or-percent #(if (= show-count-or-percent? :percent)
+                            (->
+                             %
+                             (assoc-in [:marks 0  :marks 2 :marks 0 :from
+                                        :transform 0 :offset] "normalize")
+                             (assoc-in [:marks 0  :marks 2 :marks 1 :from
+                                        :transform 0 :offset] "normalize")
+                             (assoc-in [:marks 0 :scales 2 :domainMax] 1)
+                             (assoc-in [:marks 0 :marks 1 :axes 0 :format] "%")
+                             (assoc-in [:marks 1 :marks 1 :properties
+                                        :update :text]
+                                       {:rule
+                                        [{:predicate
+                                          {:name "tooltipVisible"}}
+                                         {:template
+                                          "{{tooltipData.sum_y}}%"}]})
+                             (show-percent-sign-on-tooltip 1
+                                                           :is-grouped-stacked-chart? true))
+                            %)
+        chart-height (min (or height (* (count data) band-width)) max-height)
         chart-width (or width
                         (and (not responsive?)
                              default-chart-width))]
@@ -221,4 +258,5 @@
         (set-tooltip-bounds :visualization-height chart-height)
         (set-tooltip-bounds :visualization-width chart-width)
         (set-status-text status-text 330)
-        (chart-title-text chart-text chart-height))))
+        (chart-title-text chart-text chart-height)
+        count-or-percent)))
