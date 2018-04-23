@@ -1,5 +1,4 @@
-[![Build Status](https://travis-ci.org/onaio/vega-viewer.svg?branch=master)]
-(https://travis-ci.org/onaio/vega-viewer)
+[![Build Status](https://travis-ci.org/onaio/vega-viewer.svg?branch=master)](https://travis-ci.org/onaio/vega-viewer)
 
 # Intro
 
