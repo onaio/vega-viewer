@@ -55,6 +55,6 @@ Run `lein-figwheel` in the project root to explore the included devcard
 
 ## License
 
-Copyright © 2016 Ona
+Copyright © 2018 Ona
 
 Distributed under the [MIT License](https://opensource.org/licenses/MIT).
