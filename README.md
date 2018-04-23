@@ -48,7 +48,10 @@ Run `lein-figwheel` in the project root to explore the included devcard
 
 * [Mark Ekisa](https://github.com/ivermac)
 * [Okal Otieno](https://github.com/okal)
+* [Kipchirchir Cheroigin](https://github.com/KipSigei)
 * [Roy Rutto](https://github.com/royrutto)
+* [Peter Lubell-Doughtie](https://github.com/pld)
+* [Njagi Mwaniki](https://github.com/urbanslug)
 
 ## License
 
