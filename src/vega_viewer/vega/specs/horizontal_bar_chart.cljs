@@ -10,7 +10,8 @@
                      tooltip-offset
                      tooltip-opacity
                      tooltip-stroke-color
-                     y-offset max-height]]
+                     y-offset max-height
+                     palette]]
             [vega-viewer.vega.specs.utils
              :refer [get-tooltip-text-marks
                      custom-chart-tooltips
@@ -33,7 +34,12 @@
              :type "linear"
              :range "width"
              :round true
-             :domain {:data "entries" :field "frequency"}}]
+             :domain {:data "entries" :field "frequency"}}
+            {:name "color"
+             :type "ordinal"
+             :domain {:data "entries"
+                      :field "category"
+                      :sort true}}]
    :axes [{:scale "frequency"
            :type "x"
            :layer "back"
