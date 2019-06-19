@@ -57,7 +57,7 @@
                                           :offset bar-height-offset}
                                  :x {:scale "frequency" :field "frequency"}
                                  :x2 {:value 1}}
-                         :update {:fill {:value bar-color}}}}
+                         :update {:fill {:scale "color" :field "category"}}}}
            {:type "text"
             :from {:data "entries"}
             :properties {:enter {:x {:scale "frequency"
