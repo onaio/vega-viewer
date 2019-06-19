@@ -14,7 +14,8 @@
    `height` is an integer representing the height of the generated chart
    `width` is an integer representing the height of the generated chart"
   [cursor owner {:as opts
-                 :keys [x-axis-tick-label-format submitted-by-tooltips]}]
+                 :keys [x-axis-tick-label-format submitted-by-tooltips
+                        user-defined-palette]}]
   (reify
     om/IRender
     (render [_]
@@ -23,5 +24,7 @@
                        :x-axis-tick-label-format
                        x-axis-tick-label-format
                        :submitted-by-tooltips
-                       submitted-by-tooltips)]
+                       submitted-by-tooltips
+                       :user-defined-palette
+                       user-defined-palette)]
         (html (om/build vega-viewer vega-spec {:opts opts}))))))
