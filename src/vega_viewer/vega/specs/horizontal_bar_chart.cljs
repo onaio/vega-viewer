@@ -109,7 +109,8 @@
 (defn generate-horizontal-bar-chart-vega-spec
   [{:keys [data height width show-count-or-percent? status-text
            chart-text maximum-y-axis-label-length]}
-   & {:keys [responsive? x-axis-tick-label-format submitted-by-tooltips]}]
+   & {:keys [responsive? x-axis-tick-label-format submitted-by-tooltips
+             user-defined-palette]}]
   (let [count-or-percent #(if (= show-count-or-percent? :percent)
                             (-> %
                                 (assoc-in [:axes 0 :properties :labels :text
@@ -129,6 +130,8 @@
         (assoc-in [:data 0 :values] data)
         (assoc :height chart-height)
         (assoc :width chart-width)
+        (assoc-in [:scales 2 :range] (or (seq user-defined-palette)
+                                         palette))
         (set-tooltip-bounds :visualization-height chart-height)
         (set-tooltip-bounds :visualization-width chart-width)
         (set-status-text status-text chart-height)
