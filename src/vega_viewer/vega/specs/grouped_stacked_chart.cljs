@@ -241,8 +241,9 @@
                                           {:name "tooltipVisible"}}
                                          {:template
                                           "{{tooltipData.sum_y}}%"}]})
-                             (show-percent-sign-on-tooltip 1
-                                                           :is-grouped-stacked-chart? true))
+                             (show-percent-sign-on-tooltip
+                              1
+                              :is-grouped-stacked-chart? true))
                             %)
         chart-height (min (or height (* (count data) band-width)) max-height)
         chart-width (or width

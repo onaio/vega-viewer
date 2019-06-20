@@ -10,7 +10,8 @@
                      tooltip-offset
                      tooltip-opacity
                      tooltip-stroke-color
-                     y-offset max-height]]
+                     y-offset max-height
+                     palette]]
             [vega-viewer.vega.specs.utils
              :refer [get-tooltip-text-marks
                      custom-chart-tooltips
@@ -33,7 +34,12 @@
              :type "linear"
              :range "width"
              :round true
-             :domain {:data "entries" :field "frequency"}}]
+             :domain {:data "entries" :field "frequency"}}
+            {:name "color"
+             :type "ordinal"
+             :domain {:data "entries"
+                      :field "category"
+                      :sort true}}]
    :axes [{:scale "frequency"
            :type "x"
            :layer "back"
@@ -51,7 +57,7 @@
                                           :offset bar-height-offset}
                                  :x {:scale "frequency" :field "frequency"}
                                  :x2 {:value 1}}
-                         :update {:fill {:value bar-color}}}}
+                         :update {:fill {:scale "color" :field "category"}}}}
            {:type "text"
             :from {:data "entries"}
             :properties {:enter {:x {:scale "frequency"
@@ -103,7 +109,8 @@
 (defn generate-horizontal-bar-chart-vega-spec
   [{:keys [data height width show-count-or-percent? status-text
            chart-text maximum-y-axis-label-length]}
-   & {:keys [responsive? x-axis-tick-label-format submitted-by-tooltips]}]
+   & {:keys [responsive? x-axis-tick-label-format submitted-by-tooltips
+             user-defined-palette]}]
   (let [count-or-percent #(if (= show-count-or-percent? :percent)
                             (-> %
                                 (assoc-in [:axes 0 :properties :labels :text
@@ -123,6 +130,8 @@
         (assoc-in [:data 0 :values] data)
         (assoc :height chart-height)
         (assoc :width chart-width)
+        (assoc-in [:scales 2 :range] (or (seq user-defined-palette)
+                                         palette))
         (set-tooltip-bounds :visualization-height chart-height)
         (set-tooltip-bounds :visualization-width chart-width)
         (set-status-text status-text chart-height)
